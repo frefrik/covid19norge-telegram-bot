@@ -1,0 +1,97 @@
+bot:
+  token: BOT_TOKEN
+  autopost:
+    chatid: CHAT_ID
+    jobs:
+      rss:
+        enabled: True
+        interval: 5
+      stats:
+        enabled: True
+        interval: 360
+      graph_tested:
+        enabled: True
+        interval: 1440
+      graph_confirmed:
+        enabled: True
+        interval: 1440
+      graph_dead:
+        enabled: True
+        interval: 1440
+      graph_hospitalized:
+        enabled: True
+        interval: 1440
+      confirmed:
+        enabled: True
+        interval: 15
+        text_pos_singular: ny person smittet
+        text_pos_plural: nye personer smittet
+        text_neg_singular: ny person friskmeldt
+        text_neg_plural: nye personer friskmeldt
+      dead:
+        enabled: True
+        interval: 5
+        text_pos_singular: nytt dødsfall registrert
+        text_pos_plural: nye dødsfall registrert
+        text_neg_singular: 
+        text_neg_plural: 
+      hospitalized:
+        enabled: True
+        interval: 60
+        text_pos_singular: ny person innlagt på sykehus
+        text_pos_plural: nye personer innlagt på sykehus
+        text_neg_singular: person skrevet ut av sykehus
+        text_neg_plural: personer skrevet ut av sykehus
+      intensiveCare:
+        enabled: True
+        interval: 60
+        text_pos_singular: ny person innlagt på intensivenhet
+        text_pos_plural: nye personer innlagt på intensivenhet
+        text_neg_singular: person skrevet ut av intensivenhet
+        text_neg_plural: personer skrevet ut av intensivenhet
+      respiratory:
+        enabled: True
+        interval: 60
+        text_pos_singular: ny person tilkoblet respirator
+        text_pos_plural: nye personer tilkoblet respirator
+        text_neg_singular: person frakoblet respirator
+        text_neg_plural: personer frakoblet respirator
+      quarantineEmployees:
+        enabled: True
+        interval: 60
+        text_pos_singular: helsepersonell satt i karantene
+        text_pos_plural: helsepersonell satt i karantene
+        text_neg_singular: helsepersonell tatt ut av karantene
+        text_neg_plural: helsepersonell tatt ut av karantene
+      infectedEmployees:
+        enabled: True
+        interval: 60
+        text_pos_singular: ny helsearbeider smittet
+        text_pos_plural: nye helsearbeidere smittet
+        text_neg_singular: helsearbeider friskmeldt
+        text_neg_plural: helsearbeidere friskmeldt
+  commands:
+    title: "Commands"
+    stats: "/stats - COVID-19 statistikk Norge (Kilde: VG)"
+    tested: "/tested - Graf over testede i Norge (Kilde: VG)"
+    confirmed: "/confirmed - Graf over smittede i Norge (Kilde: VG)"
+    dead: "/dead - Graf over dødsfall i Norge (Kilde: VG)"
+    hospitalized: "/hospitalized - Graf over sykehusinnleggelser i Norge (Kilde: VG)"
+
+grafana:
+  zomg:
+    token: eyJrIjoiYjdhZ2c0Y3c1SkdZZW9QS3FrUXNIYWc2b3ZUbzU2YjYiLCJuIjoiY292aWQxOS1ub3ItdGVsZWdyYW0iLCJpZCI6MX0= #Token for common use
+    base: https://covid19.zomg.no/render/d-solo/iSKK_H9Wk/covid-19-norge?orgId=1
+    graph_dir: graphs/
+    tested:
+      url_start: "&from=1583967600000&to="
+      url_end: "&theme=light&panelId=39&width=1200&height=600&tz=Europe%2FOslo"
+    confirmed:
+      url_start: "&from=1582671600000&to="
+      url_end: "&theme=light&&panelId=28&width=1200&height=600&tz=Europe%2FOslo"
+    dead:
+      url_start: "&from=1583881200000&to="
+      url_end: "&theme=light&&panelId=29&width=1200&height=600&tz=Europe%2FOslo"
+    hospitalized:
+      url_start: "&from=1583622000000&to="
+      url_end: "&theme=light&panelId=22&width=1200&height=600&tz=Europe%2FOslo"
