@@ -1,5 +1,7 @@
+# covid19norge-telegram-bot
 config.yml
 database.sqlite
+graphs/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
