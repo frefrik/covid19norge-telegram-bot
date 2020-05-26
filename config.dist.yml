@@ -33,8 +33,8 @@ bot:
         interval: 5
         text_pos_singular: nytt dødsfall registrert
         text_pos_plural: nye dødsfall registrert
-        text_neg_singular: 
-        text_neg_plural: 
+        text_neg_singular: dødsfall fjernet fra registeret
+        text_neg_plural: dødsfall fjernet fra registeret
       hospitalized:
         enabled: True
         interval: 60
