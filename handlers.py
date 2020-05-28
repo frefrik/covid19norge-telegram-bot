@@ -6,6 +6,7 @@ sys.path.append('./modules/')
 from utils import get_messagetext, get_timestr, get_yesterday, grafana_seconds
 from vg import VG
 import grafana
+import graphs
 
 with open('config.yml', 'r') as ymlfile:
     cfg = yaml.load(ymlfile, Loader=yaml.FullLoader)
@@ -96,16 +97,20 @@ def stats(update, context):
 
 def tested_graph(update, context):
     context.bot.send_photo(chat_id=update.message.chat_id,
-        photo=grafana.tested())
+        photo=graphs.tested())
 
 def confirmed_graph(update, context):
     context.bot.send_photo(chat_id=update.message.chat_id,
-                photo=grafana.confirmed())
+                photo=graphs.confirmed())
 
 def dead_graph(update, context):
     context.bot.send_photo(chat_id=update.message.chat_id,
-                photo=grafana.dead())
+                photo=graphs.dead())
 
 def hospitalized_graph(update, context):
     context.bot.send_photo(chat_id=update.message.chat_id,
-                photo=grafana.hospitalized())
+                photo=graphs.hospitalized())
+
+def hospit_graph(update, context):
+    context.bot.send_photo(chat_id=update.message.chat_id,
+                photo=graphs.hospitalized())
