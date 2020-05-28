@@ -110,10 +110,6 @@ def hospitalized_graph(update, context):
     context.bot.send_photo(chat_id=update.message.chat_id,
                 photo=graphs.hospitalized())
 
-def hospit_graph(update, context):
-    context.bot.send_photo(chat_id=update.message.chat_id,
-                photo=graphs.hospitalized())
-
 def nordic_graph(update, context):
     if context.args[0] == 'confirmed':
         graph = graphs.nordic_confirmed()
