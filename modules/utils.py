@@ -1,4 +1,5 @@
 import yaml
+import pandas as pd
 from datetime import datetime, date, timedelta
 from vg import VG
 
@@ -22,6 +23,24 @@ def get_messagetext(name, diff):
         return None
 
     return messagetext
+
+def get_nordic_df():
+    nordic_ts = vg.get_json('nordic_ts')
+    ts_se = nordic_ts['countries']['se']
+    ts_dk = nordic_ts['countries']['dk']
+    ts_no = nordic_ts['countries']['no']
+
+    df_se = pd.DataFrame(ts_se)
+    df_dk = pd.DataFrame(ts_dk)
+    df_no = pd.DataFrame(ts_no).replace('Norway', 'Norge')
+
+    frames = [df_se, df_dk, df_no]
+
+    df = pd.concat(frames).reset_index(drop=True)
+    df = df.rename(columns={'area': 'Land'})
+    df['date'] = pd.to_datetime(df['date'])
+
+    return df
 
 def get_timestr():
     timestr = datetime.now().strftime('%H:%M')
