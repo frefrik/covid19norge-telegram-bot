@@ -1,6 +1,7 @@
 import logging
 import yaml
 import sys
+import os
 from telegram.ext import Updater, InlineQueryHandler, CommandHandler, MessageHandler, Filters
 from telegram import ParseMode
 from datetime import datetime, timedelta
@@ -12,6 +13,9 @@ import jobs
 
 with open('./config.yml', 'r') as ymlfile:
     cfg = yaml.load(ymlfile, Loader=yaml.FullLoader)
+
+if not os.path.exists('./graphs/'):
+    os.makedirs('./graphs/')
 
 settings = cfg['bot']
 
