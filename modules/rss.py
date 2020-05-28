@@ -1,7 +1,6 @@
 import feedparser
 import os
 from sqlitedict import SqliteDict
-from telegram import ParseMode
 from utils import load_config
 
 db = SqliteDict('./database.sqlite', 'rss', autocommit=True)
