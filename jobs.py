@@ -3,11 +3,10 @@ import yaml
 from telegram import ParseMode
 
 sys.path.append('./modules/')
-import grafana
 import graphs
 import rss
 from vg import VG
-from utils import get_messagetext, get_timestr, get_yesterday, grafana_seconds
+from utils import get_messagetext, get_timestr, get_yesterday
 
 with open('config.yml', 'r') as ymlfile:
     cfg = yaml.load(ymlfile, Loader=yaml.FullLoader)

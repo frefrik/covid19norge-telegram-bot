@@ -77,21 +77,3 @@ bot:
     confirmed: "/confirmed - Graf over smittede i Norge (Kilde: VG)"
     dead: "/dead - Graf over dødsfall i Norge (Kilde: VG)"
     hospitalized: "/hospitalized - Graf over sykehusinnleggelser i Norge (Kilde: VG)"
-
-grafana:
-  zomg:
-    token: eyJrIjoiYjdhZ2c0Y3c1SkdZZW9QS3FrUXNIYWc2b3ZUbzU2YjYiLCJuIjoiY292aWQxOS1ub3ItdGVsZWdyYW0iLCJpZCI6MX0= #Token for common use
-    base: https://covid19.zomg.no/render/d-solo/iSKK_H9Wk/covid-19-norge?orgId=1
-    graph_dir: graphs/
-    tested:
-      url_start: "&from=1583967600000&to="
-      url_end: "&theme=light&panelId=39&width=1200&height=600&tz=Europe%2FOslo"
-    confirmed:
-      url_start: "&from=1582671600000&to="
-      url_end: "&theme=light&&panelId=28&width=1200&height=600&tz=Europe%2FOslo"
-    dead:
-      url_start: "&from=1583881200000&to="
-      url_end: "&theme=light&&panelId=29&width=1200&height=600&tz=Europe%2FOslo"
-    hospitalized:
-      url_start: "&from=1583622000000&to="
-      url_end: "&theme=light&panelId=22&width=1200&height=600&tz=Europe%2FOslo"

@@ -33,12 +33,6 @@ def get_yesterday():
 
     return yesterday
 
-def grafana_seconds():
-    zeros = '000'
-    seconds = '{}{}'.format(get_yesterday(), zeros)
-
-    return seconds
-
 def wait_seconds(interval):
     now = datetime.now()
     next = now + (datetime.min - now) % timedelta(minutes=int(interval))
