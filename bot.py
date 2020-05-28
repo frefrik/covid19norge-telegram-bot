@@ -46,11 +46,12 @@ def main():
                 ('tested', handlers.tested_graph),
                 ('confirmed', handlers.confirmed_graph),
                 ('dead', handlers.dead_graph),
-                ('hospitalized', handlers.hospitalized_graph)]
+                ('hospitalized', handlers.hospitalized_graph),
+                ('n',handlers.nordic_graph)]
 
     for (name, callback) in commands:
         dp.add_handler(CommandHandler(name, callback))
-    
+
     ''' Jobs '''
     job_settings = settings['autopost']['jobs']
 
