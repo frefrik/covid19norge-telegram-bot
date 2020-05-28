@@ -77,3 +77,4 @@ bot:
     confirmed: "/confirmed - Graf over smittede i Norge (Kilde: VG)"
     dead: "/dead - Graf over dødsfall i Norge (Kilde: VG)"
     hospitalized: "/hospitalized - Graf over sykehusinnleggelser i Norge (Kilde: VG)"
+    n: "/n confirmed - Graf over antall smittede per 100k innb. i Norge, Sverige, Danmark (Kilde: VG)"
