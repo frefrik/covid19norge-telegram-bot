@@ -1,6 +1,6 @@
 import yaml
 from datetime import datetime, date, timedelta
-from c19_api import VG
+from vg import VG
 
 vg = VG()
 

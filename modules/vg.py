@@ -7,10 +7,6 @@ from sqlitedict import SqliteDict
 
 class VG():
     def __init__(self):
-        self.url_region = 'https://redutv-api.vg.no/corona/v1/sheets/norway-region-data'
-        self.url_fhi = 'https://redutv-api.vg.no/corona/v1/sheets/fhi'
-        self.url_reports = 'https://redutv-api.vg.no/corona/v1/areas/country/reports'
-
         self.db = SqliteDict('./database.sqlite', 'vg', autocommit=True)
 
         self.rows = ['population',
@@ -112,18 +108,23 @@ class VG():
         return data
 
     def fetch_newdata(self):
-        fhi = requests.get(self.url_fhi).json()
-        reports = requests.get(self.url_reports).json()['hospitals']['total']
-        region = requests.get(self.url_region).json()['metadata']
+        db = self.db
+        url_region = 'https://redutv-api.vg.no/corona/v1/sheets/norway-region-data'
+        url_fhi = 'https://redutv-api.vg.no/corona/v1/sheets/fhi'
+        url_reports = 'https://redutv-api.vg.no/corona/v1/areas/country/reports'
+
+        fhi = requests.get(url_fhi).json()
+        reports = requests.get(url_reports).json()['hospitals']['total']
+        region = requests.get(url_region).json()['metadata']
 
         """ population """
         population_total = region['population']
 
-        population = self.db['population']
+        population = db['population']
         population['updated_ts'] = datetime.now()
         population['total'] = population_total
 
-        self.db['population'] = population
+        db['population'] = population
 
         """ confirmed """
         confirmed_total = region['confirmed']['total']
@@ -134,7 +135,7 @@ class VG():
         confirmed_male = fhi['gender']['current']['male']
         confirmed_female = fhi['gender']['current']['female']
 
-        confirmed = self.db['confirmed']
+        confirmed = db['confirmed']
         confirmed['updated_ts'] = datetime.now()
         confirmed['total'] = confirmed_total
         confirmed['newToday'] = confirmed_newToday
@@ -144,7 +145,7 @@ class VG():
         confirmed['male'] = confirmed_male
         confirmed['female'] = confirmed_female
 
-        self.db['confirmed'] = confirmed
+        db['confirmed'] = confirmed
 
         """ dead """
         dead_total = region['dead']['total']
@@ -157,7 +158,7 @@ class VG():
         dead_totalcases = fhi['deathAges']['current']['count']
         dead_age = fhi['deathAges']['current']['mean']
 
-        dead = self.db['dead']
+        dead = db['dead']
         dead['updated_ts'] = datetime.now()
         dead['total'] = dead_total
         dead['newToday'] = dead_newToday
@@ -169,7 +170,7 @@ class VG():
         dead['totalcases'] = dead_totalcases
         dead['age_mean'] = dead_age
 
-        self.db['dead'] = dead
+        db['dead'] = dead
 
         """ tested """
         tested_total = fhi['tested']['current']['count']
@@ -184,7 +185,7 @@ class VG():
                 tested_newYesterday = i['new']
                 tested_newYesterday_pctChg = i['percentChange']
 
-        tested = self.db['tested']
+        tested = db['tested']
         tested['updated_ts'] = datetime.now()
         tested['total'] = tested_total
         tested['newToday'] = tested_newToday
@@ -192,7 +193,7 @@ class VG():
         tested['newYesterday'] = tested_newYesterday
         tested['newYesterday_pctChg'] = tested_newYesterday_pctChg
 
-        self.db['tested'] = tested
+        db['tested'] = tested
 
         """ hospitalized """
         hospitalized_total = reports['hospitalized']
@@ -201,7 +202,7 @@ class VG():
         hospitalized_totalcases = fhi['hospitalization']['current']['causedByCorona']
         hospitalized_age = fhi['hospitalization']['current']['age']['mean']
 
-        hospitalized = self.db['hospitalized']
+        hospitalized = db['hospitalized']
         hospitalized['updated_ts'] = datetime.now()
         hospitalized['total'] = hospitalized_total
         hospitalized['male'] = hospitalized_male
@@ -209,7 +210,7 @@ class VG():
         hospitalized['totalcases'] = hospitalized_totalcases
         hospitalized['age_mean'] = hospitalized_age
 
-        self.db['hospitalized'] = hospitalized
+        db['hospitalized'] = hospitalized
 
         """ intensiveCare """
         icu_total = reports['intensiveCare']
@@ -218,7 +219,7 @@ class VG():
         icu_totalcases = fhi['intensiveCare']['current']['total']
         icu_age = fhi['intensiveCare']['current']['age']['mean']
 
-        intensiveCare = self.db['intensiveCare']
+        intensiveCare = db['intensiveCare']
         intensiveCare['updated_ts'] = datetime.now()
         intensiveCare['total'] = icu_total
         intensiveCare['male'] = icu_male
@@ -226,34 +227,34 @@ class VG():
         intensiveCare['totalcases'] = icu_totalcases
         intensiveCare['age_mean'] = icu_age
 
-        self.db['intensiveCare'] = intensiveCare
+        db['intensiveCare'] = intensiveCare
 
         """ respiratory """
         respiratory_total = reports['respiratory']
 
-        respiratory = self.db['respiratory']
+        respiratory = db['respiratory']
         respiratory['updated_ts'] = datetime.now()
         respiratory['total'] = respiratory_total
 
-        self.db['respiratory'] = respiratory
+        db['respiratory'] = respiratory
 
         """ quarantineEmployees """
         quarantineEmployees_total = reports['quarantineEmployees']
 
-        quarantineEmployees = self.db['quarantineEmployees']
+        quarantineEmployees = db['quarantineEmployees']
         quarantineEmployees['updated_ts'] = datetime.now()
         quarantineEmployees['total'] = quarantineEmployees_total
 
-        self.db['quarantineEmployees'] = quarantineEmployees
+        db['quarantineEmployees'] = quarantineEmployees
 
         """ infectedEmployees """
         infectedEmployees_total = reports['infectedEmployees']
 
-        infectedEmployees = self.db['infectedEmployees']
+        infectedEmployees = db['infectedEmployees']
         infectedEmployees['updated_ts'] = datetime.now()
         infectedEmployees['total'] = infectedEmployees_total
 
-        self.db['infectedEmployees'] = infectedEmployees
+        db['infectedEmployees'] = infectedEmployees
 
 if __name__ == "__main__":
     vg = VG()
