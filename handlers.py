@@ -116,5 +116,9 @@ def hospit_graph(update, context):
 
 def nordic_graph(update, context):
     if context.args[0] == 'confirmed':
-        context.bot.send_photo(chat_id=update.message.chat_id,
-                    photo=graphs.nordic_confirmed())
+        graph = graphs.nordic_confirmed()
+    elif context.args[0] == 'dead':
+        graph = graphs.nordic_dead()
+
+    context.bot.send_photo(chat_id=update.message.chat_id,
+                photo=graph)

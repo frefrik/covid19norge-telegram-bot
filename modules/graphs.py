@@ -5,6 +5,7 @@ import json
 import datetime
 import os
 from vg import VG
+from utils import get_nordic_df
 
 vg = VG()
 
@@ -161,23 +162,9 @@ def nordic_confirmed():
     if os.path.exists(filename):
         os.remove(filename)
 
-    nordic_ts = vg.get_json('nordic_ts')
-    ts_se = nordic_ts['countries']['se']
-    ts_dk = nordic_ts['countries']['dk']
-    ts_no = nordic_ts['countries']['no']
-
-    df_se = pd.DataFrame(ts_se)
-    df_dk = pd.DataFrame(ts_dk)
-    df_no = pd.DataFrame(ts_no).replace('Norway', 'Norge')
-
-    frames = [df_se, df_dk, df_no]
-
-    df = pd.concat(frames).reset_index(drop=True)
-    df = df.rename(columns={'area': 'Land'})
-    df['date'] = pd.to_datetime(df['date'])
+    df = get_nordic_df()
     df = df[df.date >= '2020-03-01']
 
-    df['newInfected_per100k'] = df['newInfected']/(df['population']/100000)
     df['cumulativeInfected_per100k'] = df['cumulativeInfected']/(df['population']/100000)
 
     chart = alt.Chart(df).mark_line().encode(
@@ -195,5 +182,32 @@ def nordic_confirmed():
         open(filename, 'rb')
     )
 
+def nordic_dead():
+    filename = './graphs/nordic_dead.png'
+    if os.path.exists(filename):
+        os.remove(filename)
+    
+    df = get_nordic_df()
+
+    df = df[['date', 'Land', 'population', 'cumulativeDeaths', 'newDeaths']]
+
+    df['cumulativeDeaths_per100k'] = df['cumulativeDeaths']/(df['population']/100000)
+    df = df[df.date >= '2020-03-14']
+
+    chart = alt.Chart(df).mark_line().encode(
+        x=alt.X('monthdate(date):O', title='Dato'),
+        y=alt.Y('cumulativeDeaths_per100k:Q', title='Antall døde per 100k innbygger'),
+        color='Land'
+    ).properties(
+        width=1000,
+        height=600
+    )
+
+    chart.save(filename)
+
+    return(
+        open(filename, 'rb')
+    )
+
 if __name__ == "__main__":
-    nordic_confirmed()
+    nordic_dead()
