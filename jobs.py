@@ -4,6 +4,7 @@ from telegram import ParseMode
 
 sys.path.append('./modules/')
 import grafana
+import graphs
 import rss
 from vg import VG
 from utils import get_messagetext, get_timestr, get_yesterday, grafana_seconds
@@ -250,16 +251,16 @@ def rss_fhi(context):
 
 def tested_graph(context):
     context.bot.send_photo(chat_id=settings['autopost']['chatid'],
-                photo=grafana.tested())
+                photo=graphs.tested())
 
 def confirmed_graph(context):
     context.bot.send_photo(chat_id=settings['autopost']['chatid'],
-                photo=grafana.confirmed())
+                photo=graphs.confirmed())
 
 def dead_graph(context):
     context.bot.send_photo(chat_id=settings['autopost']['chatid'],
-                photo=grafana.dead())
+                photo=graphs.dead())
 
 def hospitalized_graph(context):
     context.bot.send_photo(chat_id=settings['autopost']['chatid'],
-                photo=grafana.hospitalized())
+                photo=graphs.hospitalized())
