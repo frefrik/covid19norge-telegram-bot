@@ -7,6 +7,14 @@ from sqlitedict import SqliteDict
 
 class VG():
     def __init__(self):
+        self.urls = {
+            'region': 'https://redutv-api.vg.no/corona/v1/sheets/norway-region-data',
+            'fhi': 'https://redutv-api.vg.no/corona/v1/sheets/fhi',
+            'reports': 'https://redutv-api.vg.no/corona/v1/areas/country/reports',
+            'world_ts': 'https://redutv-api.vg.no/corona/v1/world/timeseries',
+            'nordic_ts': 'https://redutv-api.vg.no/corona/v1/nordic/timeseries'
+        }
+
         self.db = SqliteDict('./database.sqlite', 'vg', autocommit=True)
 
         self.rows = ['population',
@@ -106,16 +114,18 @@ class VG():
         data = self.db[name]
         
         return data
+    
+    def get_json(self, name):
+        ret_str = requests.get(self.urls[name]).json()
+
+        return ret_str
 
     def fetch_newdata(self):
         db = self.db
-        url_region = 'https://redutv-api.vg.no/corona/v1/sheets/norway-region-data'
-        url_fhi = 'https://redutv-api.vg.no/corona/v1/sheets/fhi'
-        url_reports = 'https://redutv-api.vg.no/corona/v1/areas/country/reports'
 
-        fhi = requests.get(url_fhi).json()
-        reports = requests.get(url_reports).json()['hospitals']['total']
-        region = requests.get(url_region).json()['metadata']
+        fhi = requests.get(self.urls['fhi']).json()
+        reports = requests.get(self.urls['reports']).json()['hospitals']['total']
+        region = requests.get(self.urls['region']).json()['metadata']
 
         """ population """
         population_total = region['population']
