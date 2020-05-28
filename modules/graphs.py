@@ -3,11 +3,15 @@ import altair as alt
 import requests
 import json
 import datetime
+import os
 from vg import VG
 
 vg = VG()
 
 def tested():
+    filename = './graphs/no_tested.png'
+    os.remove(filename)
+
     fhi = vg.get_json('fhi')
     fhi = fhi['tested']['timeseries']
 
@@ -45,13 +49,16 @@ def tested():
         height=600
     )
 
-    chart.save('./graphs/no_tested.png')
+    chart.save(filename)
 
     return(
-        open('./graphs/no_tested.png', 'rb')
+        open(filename, 'rb')
     )
 
 def confirmed():
+    filename = './graphs/no_confirmed.png'
+    os.remove(filename)
+
     nordic_ts = vg.get_json('nordic_ts')
     timeseries = nordic_ts['countries']['no']
     df = pd.DataFrame(timeseries)
@@ -77,13 +84,16 @@ def confirmed():
         height=600
     )
 
-    chart.save('./graphs/no_confirmed.png')
+    chart.save(filename)
 
     return(
-        open('./graphs/no_confirmed.png', 'rb')
+        open(filename, 'rb')
     )
 
 def dead():
+    filename = './graphs/no_dead.png'
+    os.remove(filename)
+
     nordic_ts = vg.get_json('nordic_ts')
     timeseries = nordic_ts['countries']['no']
     df = pd.DataFrame(timeseries)
@@ -109,13 +119,16 @@ def dead():
         height=600
     )
 
-    chart.save('./graphs/no_dead.png')
+    chart.save(filename)
 
     return(
-        open('./graphs/no_dead.png', 'rb')
+        open(filename, 'rb')
     )
 
 def hospitalized():
+    filename = './graphs/no_hospitalized.png'
+    os.remove(filename)
+
     reports = vg.get_json('reports')
     ts = reports['hospitals']['timeseries']['total']
 
@@ -133,10 +146,10 @@ def hospitalized():
         height=600
     )
 
-    chart.save('./graphs/no_hospitalized.png')
+    chart.save(filename)
 
     return(
-        open('./graphs/no_hospitalized.png', 'rb')
+        open(filename, 'rb')
     )
 
 
