@@ -5,7 +5,7 @@ import json
 import datetime
 import os
 from vg import VG
-from utils import get_nordic_df
+from utils import get_nordic_df, get_timeseries_df
 
 vg = VG()
 
@@ -62,21 +62,19 @@ def confirmed():
     if os.path.exists(filename):
         os.remove(filename)
 
-    nordic_ts = vg.get_json('nordic_ts')
-    timeseries = nordic_ts['countries']['no']
-    df = pd.DataFrame(timeseries)
+    df = get_timeseries_df()
     
     base = alt.Chart(df).encode(
         alt.X('monthdate(date):O', axis=alt.Axis(title=None))
     )
 
     bar = base.mark_bar(color='steelblue', opacity=0.5).encode(
-        y=alt.Y('newInfected:Q',
+        y=alt.Y('new_confirmed:Q',
             axis=alt.Axis(title='Antall smittede per dag'))
     )
 
     line = base.mark_line(color='red').encode(
-        y=alt.Y('cumulativeInfected:Q',
+        y=alt.Y('total_confirmed:Q',
             axis=alt.Axis(title='Antall smittede totalt'))
     )
 
@@ -98,21 +96,19 @@ def dead():
     if os.path.exists(filename):
         os.remove(filename)
 
-    nordic_ts = vg.get_json('nordic_ts')
-    timeseries = nordic_ts['countries']['no']
-    df = pd.DataFrame(timeseries)
+    df = get_timeseries_df()
 
     base = alt.Chart(df).encode(
         alt.X('monthdate(date):O', axis=alt.Axis(title=None))
     )
 
     bar = base.mark_bar(color='purple', opacity=0.3).encode(
-        y=alt.Y('newDeaths:Q',
+        y=alt.Y('new_dead:Q',
             axis=alt.Axis(title='Antall dødsfall per dag'))
     )
 
     line = base.mark_line(color='red').encode(
-        y=alt.Y('cumulativeDeaths:Q',
+        y=alt.Y('total_dead:Q',
             axis=alt.Axis(title='Antall dødsfall totalt'))
     )
 
@@ -210,4 +206,4 @@ def nordic_dead():
     )
 
 if __name__ == "__main__":
-    nordic_dead()
+    confirmed_new()
