@@ -42,6 +42,32 @@ def get_nordic_df():
 
     return df
 
+def get_timeseries_df():
+    region = vg.get_json('region')
+    ts_new = region['timeseries']['new']
+    ts_total = region['timeseries']['total']
+    
+    df_new = pd.DataFrame(ts_new)
+    df_new = df_new.reset_index()
+    df_new.rename(columns={'index': 'date',
+                           'confirmed': 'new_confirmed',
+                           'dead': 'new_dead',
+                           'deadByDateDead': 'new_deadByDateDead'}, 
+                           inplace=True)
+
+
+    df_total = pd.DataFrame(ts_total)
+    df_total = df_total.reset_index()
+    df_total.rename(columns={'index': 'date',
+                             'confirmed': 'total_confirmed',
+                             'dead': 'total_dead',
+                             'deadByDateDead': 'total_deadByDateDead'}, 
+                             inplace=True)
+
+    df = pd.merge(df_new, df_total, how='right', on=['date'])
+
+    return df
+
 def get_timestr():
     timestr = datetime.now().strftime('%H:%M')
 
