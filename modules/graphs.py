@@ -205,6 +205,3 @@ def nordic_dead():
     return(
         open(filename, 'rb')
     )
-
-if __name__ == "__main__":
-    confirmed_new()
