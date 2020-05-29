@@ -78,7 +78,9 @@ def get_yesterday():
 
     return yesterday
 
-def wait_seconds(interval):
+def wait_seconds(job_name):
+    interval = cfg['bot']['autopost']['jobs'][job_name]['interval']
+
     now = datetime.now()
     next = now + (datetime.min - now) % timedelta(minutes=int(interval))
     sec_wait = (next - now).seconds + 10
@@ -98,3 +100,31 @@ def load_config():
         cfg = yaml.load(ymlfile, Loader=yaml.FullLoader)
 
     return cfg
+
+def job_initiate(job_name):
+    jobs = cfg['bot']['autopost']['jobs']
+
+    if job_name in jobs:
+        job = cfg['bot']['autopost']['jobs'][job_name]
+        job_var = 'j_' + job_name
+        job_interval = job['interval']
+
+        jq_run = "%s = jq.run_repeating(jobs.%s, interval=%s, first=wait_seconds('%s'))" % (job_var, job_name, job_interval, job_name)
+
+        return jq_run
+    else:
+        return None
+
+def job_enable(job_name):
+    jobs = cfg['bot']['autopost']['jobs']
+
+    if job_name in jobs:
+        job = cfg['bot']['autopost']['jobs'][job_name]
+        job_var = 'j_' + job_name
+        job_enabled = job['enabled']
+        
+        jq_enabled = "%s.enabled = %s" % (job_var, job_enabled)
+
+        return jq_enabled
+    else:
+        return None
