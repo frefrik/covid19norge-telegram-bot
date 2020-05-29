@@ -105,9 +105,9 @@ def job_initiate(job_name):
     jobs = cfg['bot']['autopost']['jobs']
 
     if job_name in jobs:
-        job = cfg['bot']['autopost']['jobs'][job_name]
+        job = jobs[job_name]
         job_var = 'j_' + job_name
-        job_interval = job['interval']
+        job_interval = job['interval'] * 60
 
         jq_run = "%s = jq.run_repeating(jobs.%s, interval=%s, first=wait_seconds('%s'))" % (job_var, job_name, job_interval, job_name)
 
