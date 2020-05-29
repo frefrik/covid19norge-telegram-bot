@@ -3,7 +3,7 @@ bot:
   autopost:
     chatid: CHAT_ID
     jobs:
-      rss:
+      rss_fhi:
         enabled: True
         interval: 5
       stats:
