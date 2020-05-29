@@ -97,6 +97,7 @@ def dead():
         os.remove(filename)
 
     df = get_timeseries_df()
+    df = df[df.date >= '2020-02-25']
 
     base = alt.Chart(df).encode(
         alt.X('monthdate(date):O', axis=alt.Axis(title=None))
