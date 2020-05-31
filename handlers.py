@@ -115,6 +115,8 @@ def nordic_graph(update, context):
         graph = graphs.nordic_confirmed()
     elif context.args[0] == 'dead':
         graph = graphs.nordic_dead()
+    elif context.args[0] == 'hospitalized':
+        graph = graphs.nordic_hospitalized()
 
     context.bot.send_photo(chat_id=update.message.chat_id,
                 photo=graph)

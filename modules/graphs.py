@@ -205,3 +205,30 @@ def nordic_dead():
     return(
         open(filename, 'rb')
     )
+
+def nordic_hospitalized():
+    filename = './graphs/nordic_hospitalized.png'
+    if os.path.exists(filename):
+        os.remove(filename)
+    
+    df = get_nordic_df()
+
+    df = df[['date', 'Land', 'population', 'currentTotalHospitalised']]
+
+    df['currentTotalHospitalised_per100k'] = df['currentTotalHospitalised']/(df['population']/100000)
+    df = df[df.date >= '2020-03-09']
+
+    chart = alt.Chart(df).mark_line().encode(
+        x=alt.X('monthdate(date):O', title='Dato'),
+        y=alt.Y('currentTotalHospitalised_per100k:Q', title='Antall innlagte per 100k innbygger'),
+        color='Land'
+    ).properties(
+        width=1200,
+        height=600
+    )
+
+    chart.save(filename)
+
+    return(
+        open(filename, 'rb')
+    )
