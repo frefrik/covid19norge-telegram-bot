@@ -21,6 +21,12 @@ bot:
       graph_hospitalized:
         enabled: True
         interval: 1440
+      nordic_confirmed_graph:
+        enabled: True
+        interval: 10080
+      nordic_dead_graph:
+        enabled: True
+        interval: 10080
       confirmed:
         enabled: True
         interval: 15

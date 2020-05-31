@@ -263,3 +263,13 @@ def dead_graph(context):
 def hospitalized_graph(context):
     context.bot.send_photo(chat_id=settings['autopost']['chatid'],
                 photo=graphs.hospitalized())
+
+def nordic_confirmed_graph(context):
+    context.bot.send_photo(chat_id='83045611',
+                photo=graphs.nordic_confirmed(),
+                caption='Antall smittede i Norge, Sverige, Danmark (per 100k innbygger)')
+
+def nordic_dead_graph(context):
+    context.bot.send_photo(chat_id='83045611',
+                photo=graphs.nordic_dead(),
+                caption='Antall døde i Norge, Sverige, Danmark (per 100k innbygger)')
