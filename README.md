@@ -98,7 +98,16 @@ autopost:
 ```
 
 ## Usage
-*Coming soon*
+
+##### Start bot
+```shell
+$ screen -dmS covid19norge python3 bot.py
+```
+
+##### Attaching to the screen
+```shell
+screen -r covid19norge
+```
 
 ## Data Source
 - https://www.vg.no/spesial/2020/corona/
