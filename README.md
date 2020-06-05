@@ -72,6 +72,12 @@ Bot is live in this channel: [COVID-19 Norge](https://t.me/s/covid19norge)
 - /n hospitalized - Graf over antall innlagte per 100k innb. i Norge, Sverige, Danmark
 - /ws \<country> - Country stats
 
+## Installation
+##### Install dependencies
+```shell
+pip install -r requirements.txt
+```
+
 ## Configuration
 *Coming soon*
 
