@@ -79,7 +79,23 @@ pip install -r requirements.txt
 ```
 
 ## Configuration
-*Coming soon*
+
+##### 1. Rename `config.dist.yml` to `config.yml`
+```shell
+$ mv config.dist.yml config.yml
+```
+
+##### 2. Replace `BOT_TOKEN` with your Telegram BOT Token
+```yaml
+bot:
+  token: BOT_TOKEN
+```
+
+##### 3. Replace `CHAT_ID` with the chatid where you want to enable autopost
+```yaml
+autopost:
+  chatid: CHAT_ID
+```
 
 ## Usage
 *Coming soon*
