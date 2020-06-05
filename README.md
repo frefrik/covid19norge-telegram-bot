@@ -106,7 +106,7 @@ $ screen -dmS covid19norge python3 bot.py
 
 ##### Attaching to the screen
 ```shell
-screen -r covid19norge
+$ screen -r covid19norge
 ```
 
 ## Data Source
