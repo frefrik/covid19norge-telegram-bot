@@ -75,7 +75,7 @@ Bot is live in this channel: [COVID-19 Norge](https://t.me/s/covid19norge)
 ## Installation
 ##### Install dependencies
 ```shell
-pip install -r requirements.txt
+$ pip install -r requirements.txt
 ```
 
 ## Configuration
