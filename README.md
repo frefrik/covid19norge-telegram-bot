@@ -9,7 +9,7 @@
 </a>
 
 ## Description
-Telegram-bot that keeps track of the COVID-19 situation in Norway.
+Telegram bot for tracking live COVID-19 statistics in Norway.
 
 The bot autoposts live COVID-19 updates to a group/channel/user of your choosing:
 ```yaml
