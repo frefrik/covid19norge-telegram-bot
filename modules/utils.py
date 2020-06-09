@@ -5,7 +5,7 @@ from vg import VG
 
 vg = VG()
 
-with open('config.yml', 'r') as ymlfile:
+with open('./config/config.yml', 'r') as ymlfile:
     cfg = yaml.load(ymlfile, Loader=yaml.FullLoader)
 
 def get_messagetext(name, diff):
@@ -96,7 +96,7 @@ def midnight_seconds():
     return next_midnight
 
 def load_config():
-    with open('./config.yml', 'r') as ymlfile:
+    with open('./config/config.yml', 'r') as ymlfile:
         cfg = yaml.load(ymlfile, Loader=yaml.FullLoader)
 
     return cfg

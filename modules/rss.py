@@ -3,7 +3,7 @@ import os
 from sqlitedict import SqliteDict
 from utils import load_config
 
-db = SqliteDict('./database.sqlite', 'rss', autocommit=True)
+db = SqliteDict('./data/database.sqlite', 'rss', autocommit=True)
 settings = load_config()
 
 key_words = ['Status koronasmitte', 'koronavirus', 'intensiv', 'covid-19', 'covid19', 'Smittestopp', 'app', 'appen']

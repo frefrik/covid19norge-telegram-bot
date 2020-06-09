@@ -15,7 +15,7 @@ class VG():
             'nordic_ts': 'https://redutv-api.vg.no/corona/v1/nordic/timeseries'
         }
 
-        self.db = SqliteDict('./database.sqlite', 'vg', autocommit=True)
+        self.db = SqliteDict('./data/database.sqlite', 'vg', autocommit=True)
 
         self.rows = ['population',
                      'confirmed',
