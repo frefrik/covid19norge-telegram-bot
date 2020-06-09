@@ -1,7 +1,8 @@
 version: '3.4'
 
 services:
-  covid19norge-telegram-bot:
+  bot:
+    container_name: covid19norge-telegram-bot
     build:
       context: .
       dockerfile: Dockerfile
@@ -9,3 +10,5 @@ services:
     volumes:
       - ./config:/app/bot/config
       - ./data:/app/bot/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
