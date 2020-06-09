@@ -72,17 +72,15 @@ Bot is live in this channel: [COVID-19 Norge](https://t.me/s/covid19norge)
 - /n hospitalized - Graf over antall innlagte per 100k innb. i Norge, Sverige, Danmark
 - /ws \<country> - Country stats
 
-## Installation
-##### Install dependencies
-```shell
-$ pip install -r requirements.txt
-```
+## Usage
 
-## Configuration
 
-##### 1. Rename `config.dist.yml` to `config.yml`
-```shell
-$ mv config.dist.yml config.yml
+### Configuration
+
+##### 1. Copy `config.dist.yml` to `config.yml`
+```bash
+$ cd config/
+$ cp config.dist.yml config.yml
 ```
 
 ##### 2. Replace `BOT_TOKEN` with your Telegram BOT Token
@@ -97,15 +95,34 @@ autopost:
   chatid: CHAT_ID
 ```
 
-## Usage
+### Deployment
+
+#### Docker
+##### Start bot
+```bash
+$ docker-compose up -d
+```
+
+If `config.yaml` is updated while bot is running, the container must be restarted to use the updated config.
+```bash
+$ docker restart covid19norge-telegram-bot
+```
+
+Use `docker logs -f covid19norge-telegram-bot` to show informational logs.
+
+#### Command line
+##### Install dependencies
+```bash
+$ pip install -r requirements.txt
+```
 
 ##### Start bot
-```shell
+```bash
 $ screen -dmS covid19norge python3 bot.py
 ```
 
 ##### Attaching to the screen
-```shell
+```bash
 $ screen -r covid19norge
 ```
 
