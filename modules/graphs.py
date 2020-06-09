@@ -1,5 +1,6 @@
 import pandas as pd
 import altair as alt
+from altair_saver import save
 import requests
 import json
 import datetime
@@ -51,7 +52,7 @@ def tested():
         height=600
     )
 
-    chart.save(filename)
+    save(chart, filename)
 
     return(
         open(filename, 'rb')
@@ -120,7 +121,7 @@ def dead():
         height=600
     )
 
-    chart.save(filename)
+    save(chart, filename)
 
     return(
         open(filename, 'rb')
@@ -148,7 +149,7 @@ def hospitalized():
         height=600
     )
 
-    chart.save(filename)
+    save(chart, filename)
 
     return(
         open(filename, 'rb')
@@ -173,7 +174,7 @@ def nordic_confirmed():
         height=600
     )
 
-    chart.save(filename)
+    save(chart, filename)
 
     return(
         open(filename, 'rb')
@@ -200,7 +201,7 @@ def nordic_dead():
         height=600
     )
 
-    chart.save(filename)
+    save(chart, filename)
 
     return(
         open(filename, 'rb')
@@ -227,7 +228,7 @@ def nordic_hospitalized():
         height=600
     )
 
-    chart.save(filename)
+    save(chart, filename)
 
     return(
         open(filename, 'rb')
