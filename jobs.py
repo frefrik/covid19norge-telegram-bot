@@ -8,7 +8,7 @@ import rss
 from vg import VG
 from utils import get_messagetext, get_timestr, get_yesterday
 
-with open('config.yml', 'r') as ymlfile:
+with open('./config/config.yml', 'r') as ymlfile:
     cfg = yaml.load(ymlfile, Loader=yaml.FullLoader)
 
 vg = VG()

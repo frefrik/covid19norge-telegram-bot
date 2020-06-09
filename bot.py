@@ -11,7 +11,7 @@ from utils import wait_seconds, midnight_seconds, job_initiate, job_enable
 import handlers
 import jobs
 
-with open('./config.yml', 'r') as ymlfile:
+with open('./config/config.yml', 'r') as ymlfile:
     cfg = yaml.load(ymlfile, Loader=yaml.FullLoader)
 
 if not os.path.exists('./graphs/'):

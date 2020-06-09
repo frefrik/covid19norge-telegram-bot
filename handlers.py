@@ -7,7 +7,7 @@ from utils import get_messagetext, get_timestr, get_yesterday
 from vg import VG
 import graphs
 
-with open('config.yml', 'r') as ymlfile:
+with open('./config/config.yml', 'r') as ymlfile:
     cfg = yaml.load(ymlfile, Loader=yaml.FullLoader)
 
 settings = cfg['bot']
