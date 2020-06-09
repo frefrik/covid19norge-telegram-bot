@@ -2,8 +2,10 @@ version: '3.4'
 
 services:
   covid19norge-telegram-bot:
-    image: covid19norge-telegram-bot
     container_name: covid19norge-telegram-bot
+    build:
+      context: .
+      dockerfile: Dockerfile
     restart: always
     volumes:
       - ./config:/app/bot/config
