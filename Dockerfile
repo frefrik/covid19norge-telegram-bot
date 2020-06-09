@@ -13,6 +13,6 @@ RUN npm -g config set user root \
 
 WORKDIR /app/bot
 ADD . /app/bot
-RUN mkdir graphs data
+RUN mkdir -p graphs data
 
 CMD ["python", "bot.py"]

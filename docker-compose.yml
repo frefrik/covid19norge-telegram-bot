@@ -1,0 +1,10 @@
+version: '3.4'
+
+services:
+  covid19norge-telegram-bot:
+    image: covid19norge-telegram-bot
+    container_name: covid19norge-telegram-bot
+    restart: always
+    volumes:
+      - ./config:/app/bot/config
+      - ./data:/app/bot/data
