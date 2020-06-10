@@ -7,8 +7,8 @@ services:
       context: .
       dockerfile: Dockerfile
     restart: always
+    environment:
+      - TZ=Europe/Oslo
     volumes:
       - ./config:/app/bot/config
       - ./data:/app/bot/data
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
