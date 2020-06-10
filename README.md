@@ -22,7 +22,7 @@ bot:
 Bot is live in this channel: [COVID-19 Norge](https://t.me/s/covid19norge)
 
 ## Screenshots
-#### Autopost Live Updates
+#### Live Updates
 <p align="left">
 <img height=600 alt="c19_live" src="https://user-images.githubusercontent.com/11590359/83899631-11284080-a759-11ea-905f-6d96f7a90f25.png">
 <img height=600 alt="c19_stats" src="https://user-images.githubusercontent.com/11590359/83899674-23a27a00-a759-11ea-8d9f-0129f2a0ae30.png">
