@@ -72,57 +72,84 @@ Bot is live in this channel: [COVID-19 Norge](https://t.me/s/covid19norge)
 - /n hospitalized - Graf over antall innlagte per 100k innb. i Norge, Sverige, Danmark
 - /ws \<country> - Country stats
 
-## Usage
+## Installation
 
+### Docker
+##### Create a file named `docker-compose.yml` and add the following:
+```yaml
+version: '3.4'
 
-### Configuration
+services:
+  bot:
+    container_name: covid19norge-telegram-bot
+    image: frefrik/covid19norge-telegram-bot
+    restart: always
+    environment:
+      - TZ=Europe/Oslo
+    volumes:
+      - ./config:/app/bot/config
+      - ./data:/app/bot/data
+```
 
-##### 1. Copy `config.dist.yml` to `config.yml`
-```bash
+##### Download and edit bot configuration
+```shell
+$ mkdir -p config \
+  && wget https://raw.githubusercontent.com/frefrik/covid19norge-telegram-bot/master/config/config.dist.yml -O config/config.yml
+```
+
+##### Start bot
+```shell
+$ docker-compose up -d
+```
+
+---
+### git + Docker
+##### Clone the repository
+```shell
+$ git clone https://github.com/frefrik/covid19norge-telegram-bot.git
+$ cd covid19norge-telegram-bot/
+```
+##### Copy `config.dist.yml` to `config.yml` and edit configuration
+```shell
 $ cd config/
 $ cp config.dist.yml config.yml
 ```
 
-##### 2. Replace `BOT_TOKEN` with your Telegram BOT Token
-```yaml
-bot:
-  token: BOT_TOKEN
-```
-
-##### 3. Replace `CHAT_ID` with the chatid where you want to enable autopost
-```yaml
-autopost:
-  chatid: CHAT_ID
-```
-
-### Deployment
-
-#### Docker
 ##### Start bot
-```bash
+```shell
 $ docker-compose up -d
 ```
 
+---
+
+#### Docker Notes
+##### Editing config
 If `config.yaml` is updated while bot is running, the container must be restarted to use the updated config.
-```bash
+```shell
 $ docker restart covid19norge-telegram-bot
 ```
-
+##### Bot logs
 Use `docker logs -f covid19norge-telegram-bot` to show informational logs.
 
-#### Command line
+---
+### Command line
 ##### Install dependencies
-```bash
+```shell
 $ pip install -r requirements.txt
 ```
 
+##### Copy `config.dist.yml` to `config.yml` and edit configuration
+```shell
+$ cp config/config.dist.yml config/onfig.yml
+```
+
 ##### Start bot
-```bash
+```shell
 $ screen -dmS covid19norge python3 bot.py
 ```
 
 ##### Attaching to the screen
-```bash
+```shell
 $ screen -r covid19norge
 ```
 
