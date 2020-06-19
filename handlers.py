@@ -38,8 +38,13 @@ def stats(update, context):
     hospitalized = vg.get_data('hospitalized', 'total')
     intensiveCare = vg.get_data('intensiveCare', 'total')
     respiratory = vg.get_data('respiratory', 'total')
-    infectedEmployees = vg.get_data('infectedEmployees', 'total')
-    quarantineEmployees = vg.get_data('quarantineEmployees', 'total')
+
+    '''
+    På grunn av færre talloppdateringer fra helseforetakene sluttet VG den 16. juni 2020 å registrere antall ansatte smittet og i karantene.
+    Dersom datatilgangen blir bedre eller smittesituasjonen i Norge tar seg opp, vil vi begynne å føre denne statistikken igjen.
+    '''
+    #infectedEmployees = vg.get_data('infectedEmployees', 'total')
+    #quarantineEmployees = vg.get_data('quarantineEmployees', 'total')
 
     ''' newToday '''
     tested_newToday = vg.get_data('tested', 'newToday')
@@ -79,8 +84,8 @@ def stats(update, context):
     ret_str += "\nSmittede i går: <b>{}</b> ({:+.02f}%)".format(confirmed_newYesterday, confirmed_newYesterday_pct)
     ret_str += "\nDødsfall i dag: <b>{}</b> ({:+.02f}%)".format(dead_newToday, dead_newToday_pct)
     ret_str += "\nDødsfall i går: <b>{}</b> ({:+.02f}%)".format(dead_newYesterday, dead_newYesterday_pct)
-    ret_str += "\n\nHelsepersonell smittet: <b>{}</b>".format(infectedEmployees)
-    ret_str += "\nHelsepersonell i karantene: <b>{}</b>".format(quarantineEmployees)
+    #ret_str += "\n\nHelsepersonell smittet: <b>{}</b>".format(infectedEmployees)
+    #ret_str += "\nHelsepersonell i karantene: <b>{}</b>".format(quarantineEmployees)
     ret_str += "\n\n<b>Kjønnsfordeling smittede</b>"
     ret_str += "\nMenn: {}%".format(vg.get_data('confirmed', 'male'))
     ret_str += "\nKvinner: {}%".format(vg.get_data('confirmed', 'female'))

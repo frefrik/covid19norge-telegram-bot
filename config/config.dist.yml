@@ -63,14 +63,14 @@ bot:
         text_neg_singular: person frakoblet respirator
         text_neg_plural: personer frakoblet respirator
       quarantineEmployees:
-        enabled: True
+        enabled: False
         interval: 60
         text_pos_singular: helsepersonell satt i karantene
         text_pos_plural: helsepersonell satt i karantene
         text_neg_singular: helsepersonell tatt ut av karantene
         text_neg_plural: helsepersonell tatt ut av karantene
       infectedEmployees:
-        enabled: True
+        enabled: False
         interval: 60
         text_pos_singular: ny helsearbeider smittet
         text_pos_plural: nye helsearbeidere smittet
