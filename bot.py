@@ -47,7 +47,9 @@ def main():
                 ('confirmed', handlers.confirmed_graph),
                 ('dead', handlers.dead_graph),
                 ('hospitalized', handlers.hospitalized_graph),
-                ('n',handlers.nordic_graph)]
+                ('n',handlers.nordic_graph),
+                ('ws',handlers.world_stats),
+                ('wg',handlers.country_graph)]
 
     for (name, callback) in commands:
         dp.add_handler(CommandHandler(name, callback))

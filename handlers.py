@@ -6,6 +6,7 @@ sys.path.append('./modules/')
 from utils import get_messagetext, get_timestr, get_yesterday
 from vg import VG
 import graphs
+import worlddata
 
 with open('./config/config.yml', 'r') as ymlfile:
     cfg = yaml.load(ymlfile, Loader=yaml.FullLoader)
@@ -89,6 +90,34 @@ def stats(update, context):
     ret_str += "\nDe {} første dødsfall: <b>{} år</b>".format(vg.get_data('dead', 'totalcases'), vg.get_data('dead', 'age_mean'))
     ret_str += "\n\nAndel av befolkningen testet: <b>{}%</b>".format(tested_pct)
     ret_str += "\nAndel av befolkningen smittet: <b>{}%</b>".format(population_pct)
+
+    context.bot.send_message(chat_id=update.message.chat_id,
+                text=ret_str,
+                parse_mode=ParseMode.HTML)
+
+def world_stats(update, context):
+    user_input = ' '.join(context.args)
+
+    if user_input.lower() in ('usa', 'united states'):
+        user_input = 'US'
+    elif user_input.lower() == 'uk':
+        user_input = 'United Kingdom'
+
+    data = worlddata.get_current(user_input)
+
+    if data:
+        country = data[0]
+        date = data[1]['date']
+        confirmed = data[1]['confirmed']
+        deaths = data[1]['deaths']
+        recovered = data[1]['recovered']
+
+        ret_str =  '<b>-- {} --</b>'.format(country)
+        ret_str += '\nSmittede totalt: <b>{}</b>'.format(confirmed)
+        ret_str += '\nDødsfall: <b>{}</b>'.format(deaths)
+        #ret_str += '\nFriske: <b>{}</b>'.format(recovered)
+    else:
+        ret_str = 'Couldnt find country: ' + user_input
 
     context.bot.send_message(chat_id=update.message.chat_id,
                 text=ret_str,

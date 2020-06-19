@@ -5,6 +5,7 @@ import requests
 import json
 import datetime
 import os
+import worlddata
 from vg import VG
 from utils import get_nordic_df, get_timeseries_df
 
@@ -229,6 +230,28 @@ def nordic_hospitalized():
     )
 
     save(chart, filename)
+
+    return(
+        open(filename, 'rb')
+    )
+
+def country_confirmed(country):
+    filename = './graphs/country_confirmed.png'
+    if os.path.exists(filename):
+        os.remove(filename)
+
+    df = worlddata.timeseries_country(country)
+
+    chart = alt.Chart(df).mark_line().encode(
+        x=alt.X('monthdate(date):O', title='Dato'),
+        y=alt.Y('confirmed:Q', title='Totalt antall smittede'),
+        color='country'
+    ).properties(
+        width=1200,
+        height=600
+    )
+
+    chart.save(filename)
 
     return(
         open(filename, 'rb')
