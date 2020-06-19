@@ -70,7 +70,9 @@ Bot is live in this channel: [COVID-19 Norge](https://t.me/s/covid19norge)
 - /n confirmed - Graf over antall smittede per 100k innb. i Norge, Sverige, Danmark
 - /n dead - Graf over antall døde per 100k innb. i Norge, Sverige, Danmark
 - /n hospitalized - Graf over antall innlagte per 100k innb. i Norge, Sverige, Danmark
-- /ws \<country> - Country stats
+- /ncon7 - Nye registrert smittet per dag (7 dager snitt - per 100k innb. i Norge, Sverige, Danmark)
+- /ws \<country\> - Antall smittet og døde i spesifisert land
+- /ws \<country\> - Graf over antall smittet i spesifisert land
 
 ## Installation
 
