@@ -156,6 +156,46 @@ def hospitalized():
         open(filename, 'rb')
     )
 
+def nordic_confirmed_ma7():
+    filename = './graphs/nordic_confirmed_sma.png'
+    if os.path.exists(filename):
+        os.remove(filename)
+
+    df = get_nordic_df()
+    
+    df_danmark = df[df['Land'] == 'Danmark']
+    df_danmark = df_danmark[['date', 'Land', 'population', 'newInfected']]
+    df_danmark['newInfected_per100k'] = df_danmark['newInfected']/(df_danmark['population']/100000)
+    df_danmark['sma_7'] = df_danmark.iloc[:,4].rolling(window=7).mean()
+
+    df_sverige = df[df['Land'] == 'Sverige']
+    df_sverige = df_sverige[['date', 'Land', 'population', 'newInfected']]
+    df_sverige['newInfected_per100k'] = df_sverige['newInfected']/(df_sverige['population']/100000)
+    df_sverige['sma_7'] = df_sverige.iloc[:,4].rolling(window=7).mean()
+
+    df_norge = df[df['Land'] == 'Norge']
+    df_norge = df_norge[['date', 'Land', 'population', 'newInfected']]
+    df_norge['newInfected_per100k'] = df_norge['newInfected']/(df_norge['population']/100000)
+    df_norge['sma_7'] = df_norge.iloc[:,4].rolling(window=7).mean()
+
+    df = pd.concat([df_danmark, df_sverige, df_norge])
+    df = df[df.date >= '2020-03-01']
+
+    chart = alt.Chart(df).mark_line().encode(
+        x=alt.X('monthdate(date):O', title='Dato'),
+        y=alt.Y('sma_7:Q', title='Nye registrert smittet per dag (7 dager snitt - per 100k innbygger)'),
+        color='Land'
+    ).properties(
+        width=1000,
+        height=600
+    )
+
+    chart.save(filename)
+
+    return(
+        open(filename, 'rb')
+    )
+
 def nordic_confirmed():
     filename = './graphs/nordic_confirmed.png'
     if os.path.exists(filename):

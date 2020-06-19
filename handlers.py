@@ -149,3 +149,12 @@ def nordic_graph(update, context):
 
     context.bot.send_photo(chat_id=update.message.chat_id,
                 photo=graph)
+
+def nordic_confirmed_ma7(update, context):
+    context.bot.send_photo(chat_id=update.message.chat_id,
+                photo=graphs.nordic_confirmed_ma7())
+
+def country_graph(update, context):
+    country = ' '.join(context.args)
+    context.bot.send_photo(chat_id=update.message.chat_id,
+                photo=graphs.country_confirmed(country))

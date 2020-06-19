@@ -48,6 +48,7 @@ def main():
                 ('dead', handlers.dead_graph),
                 ('hospitalized', handlers.hospitalized_graph),
                 ('n',handlers.nordic_graph),
+                ('ncon7',handlers.nordic_confirmed_ma7),
                 ('ws',handlers.world_stats),
                 ('wg',handlers.country_graph)]
 

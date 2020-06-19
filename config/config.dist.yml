@@ -86,5 +86,6 @@ bot:
     n confirmed: "/n confirmed - Graf over antall smittede per 100k innb. i Norge, Sverige, Danmark (Kilde: VG)"
     n dead: "/n dead - Graf over antall døde per 100k innb. i Norge, Sverige, Danmark (Kilde: VG)"
     n hospitalized: "/n hospitalized - Graf over antall innlagte per 100k innb. i Norge, Sverige, Danmark (Kilde: VG)"
+    ncon7: "/ncon7 - Nye registrert smittet per dag (7 dager snitt - per 100k innb. i Norge, Sverige, Danmark) (Kilde: VG)"
     ws: "/ws (country) - Antall smittet og døde i spesifisert land (Kilde: JHU CSSE)"
     wg: "/wg (country) - Graf over antall smittet i spesifisert land (Kilde: JHU CSSE)"
