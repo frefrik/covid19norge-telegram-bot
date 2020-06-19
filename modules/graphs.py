@@ -168,7 +168,7 @@ def nordic_confirmed():
 
     chart = alt.Chart(df).mark_line().encode(
         x=alt.X('monthdate(date):O', title='Dato'),
-        y=alt.Y('cumulativeInfected_per100k:Q', title='Antall smittede per 100k innbygger'),
+        y=alt.Y('cumulativeInfected_per100k:Q', title='Totalt antall smittede per 100k innbygger'),
         color='Land'
     ).properties(
         width=1000,
@@ -195,7 +195,7 @@ def nordic_dead():
 
     chart = alt.Chart(df).mark_line().encode(
         x=alt.X('monthdate(date):O', title='Dato'),
-        y=alt.Y('cumulativeDeaths_per100k:Q', title='Antall døde per 100k innbygger'),
+        y=alt.Y('cumulativeDeaths_per100k:Q', title='Totalt antall døde per 100k innbygger'),
         color='Land'
     ).properties(
         width=1000,
