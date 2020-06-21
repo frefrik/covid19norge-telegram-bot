@@ -93,7 +93,6 @@ class Covid19Nor:
         while not data_age:
             retries += 1
             try:
-                print('Fetching new data, #', retries)
                 self._fetch_newdata()
                 time.sleep(0.5)
                 data_age = self._check_data_age(name)
