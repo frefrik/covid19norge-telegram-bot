@@ -7,42 +7,30 @@ import datetime
 import os
 import worlddata
 from vg import VG
+from covid19nor import Covid19Nor
 from utils import get_nordic_df, get_timeseries_df
 
 vg = VG()
+c19n = Covid19Nor()
 
 def tested():
     filename = './graphs/no_tested.png'
     if os.path.exists(filename):
         os.remove(filename)
 
-    fhi = vg.get_json('fhi')
-    fhi = fhi['tested']['timeseries']
+    df = c19n.get_timeseries('tested')
 
-    df_fhi = pd.json_normalize(fhi)
-    df_fhi = df_fhi[['date', 'count', 'new']].dropna(subset=['count']).fillna(0)
-    df_fhi['date'] = pd.to_datetime(df_fhi['date'])
-
-    idx = pd.date_range(df_fhi['date'].min(), df_fhi['date'].max())
-
-    df_fhi.index = pd.DatetimeIndex(df_fhi['date'])
-    df_fhi = df_fhi.reindex(idx)
-    df_fhi['date'] = df_fhi.index
-    df_fhi['new'] = df_fhi['new'].fillna(0)
-    df_fhi['count'] = df_fhi['count'].fillna(method='ffill')
-    df_fhi = df_fhi.reset_index(drop=True)
-
-    base = alt.Chart(df_fhi).encode(
+    base = alt.Chart(df).encode(
         alt.X('monthdate(date):O', axis=alt.Axis(title=None))
     )
 
     bar = base.mark_bar(color='green', opacity=0.3).encode(
-        y=alt.Y('new:Q',
+        y=alt.Y('n_tests:Q',
             axis=alt.Axis(title='Antall testet per dag'))
     )
 
     line = base.mark_line(color='red').encode(
-        y=alt.Y('count:Q',
+        y=alt.Y('n_tests_cumulative:Q',
             axis=alt.Axis(title='Antall testet totalt'))
     )
 
@@ -296,3 +284,6 @@ def country_confirmed(country):
     return(
         open(filename, 'rb')
     )
+
+if __name__ == "__main__":
+    tested()

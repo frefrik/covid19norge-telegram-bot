@@ -3,21 +3,23 @@ import yaml
 from telegram import ParseMode
 
 sys.path.append('./modules/')
-import graphs
-import rss
 from vg import VG
+from covid19nor import Covid19Nor
 from utils import get_messagetext, get_timestr, get_yesterday
+import rss
+import graphs
 
 with open('./config/config.yml', 'r') as ymlfile:
     cfg = yaml.load(ymlfile, Loader=yaml.FullLoader)
 
 vg = VG()
+c19n = Covid19Nor()
 settings = cfg['bot']
 
 def stats(context):
     ''' Totals '''
     population = vg.get_data('population', 'total')
-    tested = vg.get_data('tested', 'total')
+    tested = c19n.get_data('tested', 'total')
     confirmed = vg.get_data('confirmed', 'total')
     dead = vg.get_data('dead', 'total')
     hospitalized = vg.get_data('hospitalized', 'total')
@@ -32,12 +34,12 @@ def stats(context):
     #quarantineEmployees = vg.get_data('quarantineEmployees', 'total')
 
     ''' newToday '''
-    tested_newToday = vg.get_data('tested', 'newToday')
+    tested_newToday = c19n.get_data('tested', 'newToday')
     confirmed_newToday = vg.get_data('confirmed', 'newToday')
     dead_newToday = vg.get_data('dead', 'newToday')
 
     ''' newYesterday '''
-    tested_newYesterday = vg.get_data('tested', 'newYesterday')
+    tested_newYesterday = c19n.get_data('tested', 'newYesterday')
     confirmed_newYesterday = vg.get_data('confirmed', 'newYesterday')
     dead_newYesterday = vg.get_data('dead', 'newYesterday')
 
@@ -48,8 +50,8 @@ def stats(context):
     dead_pct = round(dead / confirmed * 100, 1)
     intensiveCare_pct = round(intensiveCare / hospitalized * 100,1)
     respiratory_pct = round(respiratory / hospitalized * 100,1)
-    tested_newToday_pct = vg.get_data('tested', 'newToday_pctChg')
-    tested_newYesterday_pct = vg.get_data('tested', 'newYesterday_pctChg')
+    tested_newToday_pct = c19n.get_data('tested', 'newToday_pctChg')
+    tested_newYesterday_pct = c19n.get_data('tested', 'newYesterday_pctChg')
     confirmed_newToday_pct = vg.get_data('confirmed', 'newToday_pctChg')
     confirmed_newYesterday_pct = vg.get_data('confirmed', 'newYesterday_pctChg')
     dead_newToday_pct = vg.get_data('dead', 'newToday_pctChg')
