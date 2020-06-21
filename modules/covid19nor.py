@@ -125,16 +125,3 @@ class Covid19Nor:
             df = None
 
         return df
-
-if __name__ == "__main__":
-    c19 = Covid19Nor()
-
-
-    respiratory = c19.get_data('respiratory', 'total')
-    admissions = c19.get_data('admissions', 'total')
-    tested = c19.get_data('tested', 'total')
-    print(respiratory)
-    print(admissions)
-    print(tested)
-    ts = c19.get_timeseries('respiratory')
-    print(ts)
