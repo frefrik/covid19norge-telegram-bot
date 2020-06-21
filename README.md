@@ -155,5 +155,6 @@ $ screen -dmS covid19norge python3 bot.py
 $ screen -r covid19norge
 ```
 
-## Data Source
+## Data Sources
 - https://www.vg.no/spesial/2020/corona/
+- https://github.com/thohan88/covid19-nor-data
