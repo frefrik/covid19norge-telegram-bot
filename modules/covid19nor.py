@@ -41,17 +41,22 @@ class Covid19Nor:
 
         """ tested """
         tested_last_date = tested_df.date.max()
-        tested_newToday, tested_newYesterday, tested_newToday_pctChg, tested_newYesterday_pctChg = 0, 0, 0, 0
         tested_current = tested_df[tested_df.date == tested_df.date.max()]
         tested_total = tested_current.n_tests_cumulative.values[0].astype(int)
 
         if tested_last_date == str(today):
             tested_newToday = tested_current.n_tests.values[0].astype(int)
             tested_newToday_pctChg = round(tested_newToday / (tested_total - tested_newToday)*100,2)
+        else:
+            tested_newToday = 0
+            tested_newToday_pctChg = 0
 
-        if tested_last_date == str(yesterday):
+        if tested_df['date'].str.contains(str(yesterday)).sum() == 1:
             tested_newYesterday = tested_df[tested_df.date == str(yesterday)].n_tests.values[0].astype(int)
             tested_newYesterday_pctChg = round(tested_newYesterday / (tested_total - tested_newToday - tested_newYesterday)*100,2)
+        else:
+            tested_newYesterday = 0
+            tested_newYesterday_pctChg = 0
 
         tested = db['tested']
         tested['updated_ts'] = datetime.now()
