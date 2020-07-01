@@ -62,9 +62,6 @@ class VG():
                 last_total = item[1]['last_total']
 
                 last_diff = total - last_total
-
-                print(item[0], last_diff)
-
         else:
             db = self.db[name]
             total = db['total']
@@ -166,7 +163,7 @@ class VG():
         dead_male = fhi['deathAges']['current']['gender']['male']
         dead_female = fhi['deathAges']['current']['gender']['female']
         dead_totalcases = fhi['deathAges']['current']['count']
-        dead_age = fhi['deathAges']['current']['mean']
+        #dead_age = fhi['deathAges']['current']['mean']
 
         dead = db['dead']
         dead['updated_ts'] = datetime.now()
@@ -178,7 +175,7 @@ class VG():
         dead['male'] = dead_male
         dead['female'] = dead_female
         dead['totalcases'] = dead_totalcases
-        dead['age_mean'] = dead_age
+        #dead['age_mean'] = dead_age
 
         db['dead'] = dead
 
@@ -265,10 +262,3 @@ class VG():
         infectedEmployees['total'] = infectedEmployees_total
 
         db['infectedEmployees'] = infectedEmployees
-
-if __name__ == "__main__":
-    vg = VG()
-
-    vg.select_all()
-    #vg.get_last_diff('all')
-    #vg.get_data('confirmed','total')

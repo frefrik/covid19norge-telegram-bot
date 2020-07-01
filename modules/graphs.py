@@ -284,6 +284,3 @@ def country_confirmed(country):
     return(
         open(filename, 'rb')
     )
-
-if __name__ == "__main__":
-    tested()

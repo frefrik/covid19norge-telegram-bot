@@ -42,6 +42,3 @@ def fhi():
             return None
 
         return ret_str
-
-if __name__ == "__main__":
-    select_all()

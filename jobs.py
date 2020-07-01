@@ -79,7 +79,7 @@ def stats(context):
     ret_str += "\n\n<b>Gjennomsnittsalder</b>"
     ret_str += "\nDe {} første innlagte: <b>{} år</b>".format(vg.get_data('hospitalized', 'totalcases'), vg.get_data('hospitalized', 'age_mean'))
     ret_str += "\nDe {} første innlagte på intensiv: <b>{} år</b>".format(vg.get_data('intensiveCare', 'totalcases'), vg.get_data('intensiveCare', 'age_mean'))
-    ret_str += "\nDe {} første dødsfall: <b>{} år</b>".format(vg.get_data('dead', 'totalcases'), vg.get_data('dead', 'age_mean'))
+    #ret_str += "\nDe {} første dødsfall: <b>{} år</b>".format(vg.get_data('dead', 'totalcases'), vg.get_data('dead', 'age_mean'))
     ret_str += "\n\nAndel av befolkningen testet: <b>{}%</b>".format(tested_pct)
     ret_str += "\nAndel av befolkningen smittet: <b>{}%</b>".format(population_pct)
 
