@@ -1,282 +1,226 @@
-import sys
-import yaml
+from time import sleep
+from datetime import datetime
 from telegram import ParseMode
+from modules.utils import load_config, get_messagetext, get_timestr
+from modules.utils import file_open, file_write
+import modules.rss as rss
+import modules.graphs as graphs
+import modules.c19api as c19api
 
-sys.path.append('./modules/')
-from vg import VG
-from covid19nor import Covid19Nor
-from utils import get_messagetext, get_timestr, get_yesterday
-import rss
-import graphs
+cfg = load_config()
+bot = cfg['bot']
+jobs = bot['autopost']['jobs']
 
-with open('./config/config.yml', 'r') as ymlfile:
-    cfg = yaml.load(ymlfile, Loader=yaml.FullLoader)
-
-vg = VG()
-c19n = Covid19Nor()
-settings = cfg['bot']
 
 def stats(context):
-    ''' Totals '''
-    population = vg.get_data('population', 'total')
-    tested = c19n.get_data('tested', 'total')
-    confirmed = vg.get_data('confirmed', 'total')
-    dead = vg.get_data('dead', 'total')
-    hospitalized = vg.get_data('hospitalized', 'total')
-    intensiveCare = vg.get_data('intensiveCare', 'total')
-    respiratory = vg.get_data('respiratory', 'total')
+    # metadata
+    tested = c19api.metadata('tested')
+    confirmed = c19api.metadata('confirmed')
+    dead = c19api.metadata('dead')
+    admissions = c19api.metadata('admissions')
+    respiratory = c19api.metadata('respiratory')
 
-    '''
-    På grunn av færre talloppdateringer fra helseforetakene sluttet VG den 16. juni 2020 å registrere antall ansatte smittet og i karantene.
-    Dersom datatilgangen blir bedre eller smittesituasjonen i Norge tar seg opp, vil vi begynne å føre denne statistikken igjen.
-    '''
-    #infectedEmployees = vg.get_data('infectedEmployees', 'total')
-    #quarantineEmployees = vg.get_data('quarantineEmployees', 'total')
+    # totals
+    tested_total = tested.get('total')
+    confirmed_total = confirmed.get('total')
+    dead_total = dead.get('total')
+    admissions_total = admissions.get('total')
+    respiratory_total = respiratory.get('total')
 
-    ''' newToday '''
-    tested_newToday = c19n.get_data('tested', 'newToday')
-    confirmed_newToday = vg.get_data('confirmed', 'newToday')
-    dead_newToday = vg.get_data('dead', 'newToday')
+    # newToday
+    tested_newToday = tested.get('newToday', 0)
+    confirmed_newToday = confirmed.get('newToday', 0)
+    dead_newToday = dead.get('newToday', 0)
 
-    ''' newYesterday '''
-    tested_newYesterday = c19n.get_data('tested', 'newYesterday')
-    confirmed_newYesterday = vg.get_data('confirmed', 'newYesterday')
-    dead_newYesterday = vg.get_data('dead', 'newYesterday')
+    # newYesterday
+    tested_newYesterday = tested.get('newYesterday', 0)
+    confirmed_newYesterday = confirmed.get('newYesterday', 0)
+    dead_newYesterday = dead.get('newYesterday', 0)
 
-    ''' Percentages '''
-    population_pct = round(confirmed / population * 100, 2)
-    tested_pct = round(tested / population * 100, 1)
-    confirmed_pct = round(confirmed / tested * 100, 1)
-    dead_pct = round(dead / confirmed * 100, 1)
-    intensiveCare_pct = round(intensiveCare / hospitalized * 100,1)
-    respiratory_pct = round(respiratory / hospitalized * 100,1)
-    tested_newToday_pct = c19n.get_data('tested', 'newToday_pctChg')
-    tested_newYesterday_pct = c19n.get_data('tested', 'newYesterday_pctChg')
-    confirmed_newToday_pct = vg.get_data('confirmed', 'newToday_pctChg')
-    confirmed_newYesterday_pct = vg.get_data('confirmed', 'newYesterday_pctChg')
-    dead_newToday_pct = vg.get_data('dead', 'newToday_pctChg')
-    dead_newYesterday_pct = vg.get_data('dead', 'newYesterday_pctChg')
+    # percentages
+    confirmed_pct = round(confirmed_total / tested_total * 100, 1)
+    dead_pct = round(dead_total / confirmed_total * 100, 1)
+    respiratory_pct = round(respiratory_total / admissions_total * 100, 1)
 
-    ret_str = "<b>COVID-19</b>"
-    ret_str += "\nTestede: <b>{}</b>".format(tested)
-    ret_str += "\nSmittede: <b>{}</b> ({}% av testede) ".format(confirmed, confirmed_pct)
-    ret_str += "\nDøde: <b>{}</b> ({}% av smittede)".format(dead, dead_pct)
+    ret_str = "<b>COVID-19 Statistikk</b>"
+    ret_str += f"\nTestede: <b>{tested_total:,}</b>"
+    ret_str += f"\nSmittede: <b>{confirmed_total:,}</b> ({confirmed_pct}% av testede) "
+    ret_str += f"\nDøde: <b>{dead_total:,}</b> ({dead_pct}% av smittede)"
     ret_str += "\n\n<b>Pasienter på sykehus</b>"
-    ret_str += "\nInnlagt: <b>{}</b>".format(hospitalized)
-    ret_str += "\nIntensivbehandling: <b>{}</b> ({}% av innlagte)".format(intensiveCare, intensiveCare_pct)
-    ret_str += "\nTilkoblet respirator: <b>{}</b> ({}% av innlagte)".format(respiratory, respiratory_pct)
-    ret_str += "\n\nTestede i dag: <b>{}</b> ({:+.02f}%)".format(tested_newToday, tested_newToday_pct)
-    ret_str += "\nTestede i går: <b>{}</b> ({:+.02f}%)".format(tested_newYesterday, tested_newYesterday_pct)
-    ret_str += "\nSmittede i dag: <b>{}</b> ({:+.02f}%)".format(confirmed_newToday, confirmed_newToday_pct)
-    ret_str += "\nSmittede i går: <b>{}</b> ({:+.02f}%)".format(confirmed_newYesterday, confirmed_newYesterday_pct)
-    ret_str += "\nDødsfall i dag: <b>{}</b> ({:+.02f}%)".format(dead_newToday, dead_newToday_pct)
-    ret_str += "\nDødsfall i går: <b>{}</b> ({:+.02f}%)".format(dead_newYesterday, dead_newYesterday_pct)
-    #ret_str += "\n\nHelsepersonell smittet: <b>{}</b>".format(infectedEmployees)
-    #ret_str += "\nHelsepersonell i karantene: <b>{}</b>".format(quarantineEmployees)
-    ret_str += "\n\n<b>Kjønnsfordeling smittede</b>"
-    ret_str += "\nMenn: {}%".format(vg.get_data('confirmed', 'male'))
-    ret_str += "\nKvinner: {}%".format(vg.get_data('confirmed', 'female'))
-    ret_str += "\n\n<b>Gjennomsnittsalder</b>"
-    ret_str += "\nDe {} første innlagte: <b>{} år</b>".format(vg.get_data('hospitalized', 'totalcases'), vg.get_data('hospitalized', 'age_mean'))
-    ret_str += "\nDe {} første innlagte på intensiv: <b>{} år</b>".format(vg.get_data('intensiveCare', 'totalcases'), vg.get_data('intensiveCare', 'age_mean'))
-    #ret_str += "\nDe {} første dødsfall: <b>{} år</b>".format(vg.get_data('dead', 'totalcases'), vg.get_data('dead', 'age_mean'))
-    ret_str += "\n\nAndel av befolkningen testet: <b>{}%</b>".format(tested_pct)
-    ret_str += "\nAndel av befolkningen smittet: <b>{}%</b>".format(population_pct)
+    ret_str += f"\nInnlagt: <b>{admissions_total:,}</b>"
+    ret_str += f"\nTilkoblet respirator: <b>{respiratory_total:,}</b> ({respiratory_pct}% av innlagte)"
+    ret_str += f"\n\nTestede i dag: <b>{tested_newToday:,}</b>"
+    ret_str += f"\nTestede i går: <b>{tested_newYesterday:,}</b>"
+    ret_str += f"\nSmittede i dag: <b>{confirmed_newToday:,}</b>"
+    ret_str += f"\nSmittede i går: <b>{confirmed_newYesterday:,}</b>"
+    ret_str += f"\nDødsfall i dag: <b>{dead_newToday:,}</b>"
+    ret_str += f"\nDødsfall i går: <b>{dead_newYesterday:,}</b>"
 
-    context.bot.send_message(chat_id=settings['autopost']['chatid'],
-                text=ret_str,
-                parse_mode=ParseMode.HTML)
+    ret_str = ret_str.replace(',', ' ')
+
+    context.bot.send_message(
+        chat_id=bot['autopost']['chatid'],
+        text=ret_str,
+        parse_mode=ParseMode.HTML)
+
 
 def confirmed(context):
-    total = vg.get_data('confirmed','total')
-    newToday = vg.get_data('confirmed','newToday')
-    last_diff = vg.get_last_diff('confirmed')
     timestr = get_timestr()
+    data = c19api.metadata('confirmed')
+    total = data.get('total')
 
-    if last_diff != 0:
-        messagetext = get_messagetext('confirmed', last_diff)
+    last_data = file_open('confirmed')
 
-        if last_diff < 0:
-            ret_str = None
+    confirmed_diff = total - int(last_data)
+
+    if confirmed_diff > 0:
+        messagetext = get_messagetext('confirmed', confirmed_diff)
+
+        ret_str = f"{timestr} - 🦠 <b>{confirmed_diff}</b> {messagetext}"
+
+        if datetime.now().hour in range(0, 2):
+            newYesterday = data.get('newYesterday')
+
+            ret_str += f"\n{timestr} - Totalt: <b>{total:,}</b> (Nye siste døgn: <b>{newYesterday:,}</b>)"
         else:
-            ret_str =  "{} - &#129440; <b>{}</b> {}\n".format(timestr, last_diff, messagetext)
-            ret_str += "{} - Totalt: <b>{}</b> (Nye i dag: <b>{}</b>)".format(timestr, total, newToday)
+            newToday = data.get('newToday')
 
-        vg.update_last_diff('confirmed')
+            ret_str += f"\n{timestr} - Totalt: <b>{total:,}</b> (Nye i dag: <b>{newToday:,}</b>)"
 
-        context.bot.send_message(chat_id=settings['autopost']['chatid'],
-                        text=ret_str,
-                        parse_mode=ParseMode.HTML)
+        file_write('confirmed', total)
+
+        ret_str = ret_str.replace(',', ' ')
+        print(ret_str, '\n')
+
+        context.bot.send_message(
+            chat_id=bot['autopost']['chatid'],
+            text=ret_str,
+            parse_mode=ParseMode.HTML)
     else:
         return None
+
 
 def dead(context):
-    total = vg.get_data('dead','total')
-    newToday = vg.get_data('dead','newToday')
-    last_diff = vg.get_last_diff('dead')
     timestr = get_timestr()
+    data = c19api.metadata('dead')
+    total = data.get('total')
 
-    if last_diff != 0:
-        messagetext = get_messagetext('dead', last_diff)
+    last_data = file_open('dead')
 
-        # If number is negative, convert to positive
-        if last_diff < 0:
-            last_diff = last_diff * -1
+    dead_diff = total - int(last_data)
 
-        vg.update_last_diff('dead')
+    if dead_diff > 0:
+        messagetext = get_messagetext('dead', dead_diff)
 
-        ret_str = "{} - &#10071; <b>{}</b> {}".format(timestr, last_diff, messagetext)
-        ret_str += "\n{} - Totalt: <b>{}</b> (Nye i dag: <b>{}</b>)".format(timestr, total, newToday)
+        ret_str = f"{timestr} - ❗ <b>{dead_diff}</b> {messagetext}"
 
-        context.bot.send_message(chat_id=settings['autopost']['chatid'],
-                        text=ret_str,
-                        parse_mode=ParseMode.HTML)
+        if datetime.now().hour in range(0, 2):
+            newYesterday = data.get('newYesterday')
+
+            ret_str += f"\n{timestr} - Totalt: <b>{total:,}</b> (Nye siste døgn: <b>{newYesterday:,}</b>)"
+        else:
+            newToday = data.get('newToday')
+
+            ret_str += f"\n{timestr} - Totalt: <b>{total:,}</b> (Nye i dag: <b>{newToday:,}</b>)"
+
+        file_write('dead', total)
+
+        ret_str = ret_str.replace(',', ' ')
+        print(ret_str, '\n')
+
+        context.bot.send_message(
+            chat_id=bot['autopost']['chatid'],
+            text=ret_str,
+            parse_mode=ParseMode.HTML)
     else:
         return None
 
-def hospitalized(context):
-    total = vg.get_data('hospitalized','total')
-    last_diff = vg.get_last_diff('hospitalized')
+
+def admissions(context):
     timestr = get_timestr()
+    total = c19api.metadata('admissions', 'total')
 
-    if last_diff != 0:
-        messagetext = get_messagetext('hospitalized', last_diff)
+    last_data = file_open('admissions')
 
-        # If number is negative, convert to positive
-        if last_diff < 0:
-            last_diff = last_diff * -1
+    diff = total - int(last_data)
 
-        vg.update_last_diff('hospitalized')
+    if diff != 0:
+        if total == 1:
+            messagetext = 'person er innlagt på sykehus'
+        else:
+            messagetext = 'personer er innlagt på sykehus'
 
-        ret_str = "{} - &#127973; <b>{}</b> {}".format(timestr, last_diff, messagetext)
-        ret_str += "\n{} - Totalt: <b>{}</b>".format(timestr, total)
+        ret_str = f"{timestr} - 🏥 Endring i antall innlagte: <b>{diff:+}</b>"
+        ret_str += f"\n{timestr} - <b>{total:,}</b> {messagetext}"
 
-        context.bot.send_message(chat_id=settings['autopost']['chatid'],
-                        text=ret_str,
-                        parse_mode=ParseMode.HTML)
+        file_write('admissions', total)
+
+        ret_str = ret_str.replace(',', ' ')
+        print(ret_str, '\n')
+
+        context.bot.send_message(
+            chat_id=bot['autopost']['chatid'],
+            text=ret_str,
+            parse_mode=ParseMode.HTML)
     else:
         return None
 
-def intensiveCare(context):
-    total = vg.get_data('intensiveCare','total')
-    last_diff = vg.get_last_diff('intensiveCare')
-    timestr = get_timestr()
-
-    if last_diff != 0:
-        messagetext = get_messagetext('intensiveCare', last_diff)
-
-        # If number is negative, convert to positive
-        if last_diff < 0:
-            last_diff = last_diff * -1
-
-        vg.update_last_diff('intensiveCare')
-
-        ret_str = "{} - 🤒 <b>{}</b> {}".format(timestr, last_diff, messagetext)
-        ret_str += "\n{} - Totalt: <b>{}</b>".format(timestr, total)
-
-        context.bot.send_message(chat_id=settings['autopost']['chatid'],
-                        text=ret_str,
-                        parse_mode=ParseMode.HTML)
-    else:
-        return None
 
 def respiratory(context):
-    total = vg.get_data('respiratory','total')
-    last_diff = vg.get_last_diff('respiratory')
     timestr = get_timestr()
+    total = c19api.metadata('respiratory', 'total')
 
-    if last_diff != 0:
-        messagetext = get_messagetext('respiratory', last_diff)
+    last_data = file_open('respiratory')
 
-        # If number is negative, convert to positive
-        if last_diff < 0:
-            last_diff = last_diff * -1
+    diff = total - int(last_data)
 
-        vg.update_last_diff('respiratory')
+    if diff != 0:
+        if total == 1:
+            messagetext = 'person er på respirator'
+        else:
+            messagetext = 'personer er på respirator'
 
-        ret_str = "{} - 😷 <b>{}</b> {}".format(timestr, last_diff, messagetext)
-        ret_str += "\n{} - Totalt: <b>{}</b>".format(timestr, total)
+        ret_str = f"{timestr} - 😷 Endring i antall på respirator: <b>{diff:+}</b>"
+        ret_str += f"\n{timestr} - <b>{total:,}</b> {messagetext}"
 
-        context.bot.send_message(chat_id=settings['autopost']['chatid'],
-                        text=ret_str,
-                        parse_mode=ParseMode.HTML)
+        file_write('respiratory', total)
+
+        ret_str = ret_str.replace(',', ' ')
+        print(ret_str, '\n')
+
+        context.bot.send_message(
+            chat_id=bot['autopost']['chatid'],
+            text=ret_str,
+            parse_mode=ParseMode.HTML)
     else:
         return None
 
-def quarantineEmployees(context):
-    total = vg.get_data('quarantineEmployees','total')
-    last_diff = vg.get_last_diff('quarantineEmployees')
-    timestr = get_timestr()
-
-    if last_diff != 0:
-        messagetext = get_messagetext('quarantineEmployees', last_diff)
-
-        # If number is negative, convert to positive
-        if last_diff < 0:
-            last_diff = last_diff * -1
-
-        vg.update_last_diff('quarantineEmployees')
-
-        ret_str = "{} - ☣️ <b>{}</b> {}".format(timestr, last_diff, messagetext)
-        ret_str += "\n{} - Totalt: <b>{}</b>".format(timestr, total)
-
-        context.bot.send_message(chat_id=settings['autopost']['chatid'],
-                        text=ret_str,
-                        parse_mode=ParseMode.HTML)
-    else:
-        return None
-
-def infectedEmployees(context):
-    total = vg.get_data('infectedEmployees','total')
-    last_diff = vg.get_last_diff('infectedEmployees')
-    timestr = get_timestr()
-
-    if last_diff != 0:
-        messagetext = get_messagetext('infectedEmployees', last_diff)
-
-        if last_diff < 0:
-            last_diff = last_diff * -1
-
-        vg.update_last_diff('infectedEmployees')
-
-        ret_str = "{} - &#129440;🧑‍⚕️ <b>{}</b> {}".format(timestr, last_diff, messagetext)
-        ret_str += "\n{} - Totalt: <b>{}</b>".format(timestr, total)
-
-        context.bot.send_message(chat_id=settings['autopost']['chatid'],
-                        text=ret_str,
-                        parse_mode=ParseMode.HTML)
-    else:
-        return None
 
 def rss_fhi(context):
     res = rss.fhi()
     if res is not None:
-        context.bot.send_message(chat_id=settings['autopost']['chatid'],
-                        text=res,
-                        parse_mode=ParseMode.HTML)
+        context.bot.send_message(
+            chat_id=bot['autopost']['chatid'],
+            text=res,
+            parse_mode=ParseMode.HTML)
 
-def tested_graph(context):
-    context.bot.send_photo(chat_id=settings['autopost']['chatid'],
-                photo=graphs.tested())
 
-def confirmed_graph(context):
-    context.bot.send_photo(chat_id=settings['autopost']['chatid'],
-                photo=graphs.confirmed())
+def rss_regjeringen(context):
+    res = rss.regjeringen()
+    if res is not None:
+        context.bot.send_message(
+            chat_id=bot['autopost']['chatid'],
+            text=res,
+            parse_mode=ParseMode.HTML)
 
-def dead_graph(context):
-    context.bot.send_photo(chat_id=settings['autopost']['chatid'],
-                photo=graphs.dead())
 
-def hospitalized_graph(context):
-    context.bot.send_photo(chat_id=settings['autopost']['chatid'],
-                photo=graphs.hospitalized())
+def graph_all(context):
+    chat_id = bot['autopost']['chatid']
 
-def nordic_confirmed_graph(context):
-    context.bot.send_photo(chat_id=settings['autopost']['chatid'],
-                photo=graphs.nordic_confirmed(),
-                caption='Totalt antall smittede i Norge, Sverige, Danmark (per 100k innbygger)')
-
-def nordic_dead_graph(context):
-    context.bot.send_photo(chat_id=settings['autopost']['chatid'],
-                photo=graphs.nordic_dead(),
-                caption='Totalt antall døde i Norge, Sverige, Danmark (per 100k innbygger)')
+    context.bot.send_photo(chat_id, graphs.tested())
+    sleep(2)
+    context.bot.send_photo(chat_id, graphs.confirmed())
+    sleep(2)
+    context.bot.send_photo(chat_id, graphs.dead())
+    sleep(2)
+    context.bot.send_photo(chat_id, graphs.hospitalized())

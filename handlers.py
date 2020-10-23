@@ -1,167 +1,102 @@
-import sys
-import yaml
 from telegram import ParseMode
+from modules.utils import load_config
+import modules.graphs as graphs
+import modules.c19api as c19api
 
-sys.path.append('./modules/')
-from vg import VG
-from covid19nor import Covid19Nor
-from utils import get_messagetext, get_timestr, get_yesterday
-import graphs
-import worlddata
-
-with open('./config/config.yml', 'r') as ymlfile:
-    cfg = yaml.load(ymlfile, Loader=yaml.FullLoader)
-
+cfg = load_config()
 settings = cfg['bot']
-vg = VG()
-c19n = Covid19Nor()
+
 
 def chatid(update, context):
-    context.bot.send_message(chat_id=update.message.chat_id,
-                    text="Chatid: {}".format(update.message.chat_id),
-                    parse_mode=ParseMode.HTML)
+    context.bot.send_message(
+        chat_id=update.message.chat_id,
+        text="Chatid: {}".format(update.message.chat_id),
+        parse_mode=ParseMode.HTML)
+
 
 def help(update, context):
     menuitems = '<b>' + settings['commands']['title'] + '</b>\n'
-    
+
     for command in list(settings['commands'].items())[1:]:
         menuitems += command[1] + '\n'
 
-    context.bot.send_message(chat_id=update.message.chat_id,
-                    text=menuitems,
-                    parse_mode=ParseMode.HTML)
+    context.bot.send_message(
+        chat_id=update.message.chat_id,
+        text=menuitems,
+        parse_mode=ParseMode.HTML)
+
 
 def stats(update, context):
-    ''' Totals '''
-    population = vg.get_data('population', 'total')
-    tested = c19n.get_data('tested', 'total')
-    confirmed = vg.get_data('confirmed', 'total')
-    dead = vg.get_data('dead', 'total')
-    hospitalized = vg.get_data('hospitalized', 'total')
-    intensiveCare = vg.get_data('intensiveCare', 'total')
-    respiratory = vg.get_data('respiratory', 'total')
+    # metadata
+    tested = c19api.metadata('tested')
+    confirmed = c19api.metadata('confirmed')
+    dead = c19api.metadata('dead')
+    admissions = c19api.metadata('admissions')
+    respiratory = c19api.metadata('respiratory')
 
-    '''
-    På grunn av færre talloppdateringer fra helseforetakene sluttet VG den 16. juni 2020 å registrere antall ansatte smittet og i karantene.
-    Dersom datatilgangen blir bedre eller smittesituasjonen i Norge tar seg opp, vil vi begynne å føre denne statistikken igjen.
-    '''
-    #infectedEmployees = vg.get_data('infectedEmployees', 'total')
-    #quarantineEmployees = vg.get_data('quarantineEmployees', 'total')
+    # totals
+    tested_total = tested.get('total')
+    confirmed_total = confirmed.get('total')
+    dead_total = dead.get('total')
+    admissions_total = admissions.get('total')
+    respiratory_total = respiratory.get('total')
 
-    ''' newToday '''
-    tested_newToday = c19n.get_data('tested', 'newToday')
-    confirmed_newToday = vg.get_data('confirmed', 'newToday')
-    dead_newToday = vg.get_data('dead', 'newToday')
+    # newToday
+    tested_newToday = tested.get('newToday', 0)
+    confirmed_newToday = confirmed.get('newToday', 0)
+    dead_newToday = dead.get('newToday', 0)
 
-    ''' newYesterday '''
-    tested_newYesterday = c19n.get_data('tested', 'newYesterday')
-    confirmed_newYesterday = vg.get_data('confirmed', 'newYesterday')
-    dead_newYesterday = vg.get_data('dead', 'newYesterday')
+    # newYesterday
+    tested_newYesterday = tested.get('newYesterday', 0)
+    confirmed_newYesterday = confirmed.get('newYesterday', 0)
+    dead_newYesterday = dead.get('newYesterday', 0)
 
-    ''' Percentages '''
-    population_pct = round(confirmed / population * 100, 2)
-    tested_pct = round(tested / population * 100, 1)
-    confirmed_pct = round(confirmed / tested * 100, 1)
-    dead_pct = round(dead / confirmed * 100, 1)
-    intensiveCare_pct = round(intensiveCare / hospitalized * 100,1)
-    respiratory_pct = round(respiratory / hospitalized * 100,1)
-    tested_newToday_pct = c19n.get_data('tested', 'newToday_pctChg')
-    tested_newYesterday_pct = c19n.get_data('tested', 'newYesterday_pctChg')
-    confirmed_newToday_pct = vg.get_data('confirmed', 'newToday_pctChg')
-    confirmed_newYesterday_pct = vg.get_data('confirmed', 'newYesterday_pctChg')
-    dead_newToday_pct = vg.get_data('dead', 'newToday_pctChg')
-    dead_newYesterday_pct = vg.get_data('dead', 'newYesterday_pctChg')
+    # percentages
+    confirmed_pct = round(confirmed_total / tested_total * 100, 1)
+    dead_pct = round(dead_total / confirmed_total * 100, 1)
+    respiratory_pct = round(respiratory_total / admissions_total * 100, 1)
 
     ret_str = "<b>COVID-19</b>"
-    ret_str += "\nTestede: <b>{}</b>".format(tested)
-    ret_str += "\nSmittede: <b>{}</b> ({}% av testede) ".format(confirmed, confirmed_pct)
-    ret_str += "\nDøde: <b>{}</b> ({}% av smittede)".format(dead, dead_pct)
+    ret_str += f"\nTestede: <b>{tested_total:,}</b>"
+    ret_str += f"\nSmittede: <b>{confirmed_total:,}</b> ({confirmed_pct}% av testede) "
+    ret_str += f"\nDøde: <b>{dead_total:,}</b> ({dead_pct}% av smittede)"
     ret_str += "\n\n<b>Pasienter på sykehus</b>"
-    ret_str += "\nInnlagt: <b>{}</b>".format(hospitalized)
-    ret_str += "\nIntensivbehandling: <b>{}</b> ({}% av innlagte)".format(intensiveCare, intensiveCare_pct)
-    ret_str += "\nTilkoblet respirator: <b>{}</b> ({}% av innlagte)".format(respiratory, respiratory_pct)
-    ret_str += "\n\nTestede i dag: <b>{}</b> ({:+.02f}%)".format(tested_newToday, tested_newToday_pct)
-    ret_str += "\nTestede i går: <b>{}</b> ({:+.02f}%)".format(tested_newYesterday, tested_newYesterday_pct)
-    ret_str += "\nSmittede i dag: <b>{}</b> ({:+.02f}%)".format(confirmed_newToday, confirmed_newToday_pct)
-    ret_str += "\nSmittede i går: <b>{}</b> ({:+.02f}%)".format(confirmed_newYesterday, confirmed_newYesterday_pct)
-    ret_str += "\nDødsfall i dag: <b>{}</b> ({:+.02f}%)".format(dead_newToday, dead_newToday_pct)
-    ret_str += "\nDødsfall i går: <b>{}</b> ({:+.02f}%)".format(dead_newYesterday, dead_newYesterday_pct)
-    #ret_str += "\n\nHelsepersonell smittet: <b>{}</b>".format(infectedEmployees)
-    #ret_str += "\nHelsepersonell i karantene: <b>{}</b>".format(quarantineEmployees)
-    ret_str += "\n\n<b>Kjønnsfordeling smittede</b>"
-    ret_str += "\nMenn: {}%".format(vg.get_data('confirmed', 'male'))
-    ret_str += "\nKvinner: {}%".format(vg.get_data('confirmed', 'female'))
-    ret_str += "\n\n<b>Gjennomsnittsalder</b>"
-    ret_str += "\nDe {} første innlagte: <b>{} år</b>".format(vg.get_data('hospitalized', 'totalcases'), vg.get_data('hospitalized', 'age_mean'))
-    ret_str += "\nDe {} første innlagte på intensiv: <b>{} år</b>".format(vg.get_data('intensiveCare', 'totalcases'), vg.get_data('intensiveCare', 'age_mean'))
-    #ret_str += "\nDe {} første dødsfall: <b>{} år</b>".format(vg.get_data('dead', 'totalcases'), vg.get_data('dead', 'age_mean'))
-    ret_str += "\n\nAndel av befolkningen testet: <b>{}%</b>".format(tested_pct)
-    ret_str += "\nAndel av befolkningen smittet: <b>{}%</b>".format(population_pct)
+    ret_str += f"\nInnlagt: <b>{admissions_total:,}</b>"
+    ret_str += f"\nTilkoblet respirator: <b>{respiratory_total:,}</b> ({respiratory_pct}% av innlagte)"
+    ret_str += f"\n\nTestede i dag: <b>{tested_newToday:,}</b>"
+    ret_str += f"\nTestede i går: <b>{tested_newYesterday:,}</b>"
+    ret_str += f"\nSmittede i dag: <b>{confirmed_newToday:,}</b>"
+    ret_str += f"\nSmittede i går: <b>{confirmed_newYesterday:,}</b>"
+    ret_str += f"\nDødsfall i dag: <b>{dead_newToday:,}</b>"
+    ret_str += f"\nDødsfall i går: <b>{dead_newYesterday:,}</b>"
 
-    context.bot.send_message(chat_id=update.message.chat_id,
-                text=ret_str,
-                parse_mode=ParseMode.HTML)
+    ret_str = ret_str.replace(',', ' ')
 
-def world_stats(update, context):
-    user_input = ' '.join(context.args)
+    context.bot.send_message(
+        chat_id=update.message.chat_id,
+        text=ret_str,
+        parse_mode=ParseMode.HTML)
 
-    if user_input.lower() in ('usa', 'united states'):
-        user_input = 'US'
-    elif user_input.lower() == 'uk':
-        user_input = 'United Kingdom'
-
-    data = worlddata.get_current(user_input)
-
-    if data:
-        country = data[0]
-        date = data[1]['date']
-        confirmed = data[1]['confirmed']
-        deaths = data[1]['deaths']
-        recovered = data[1]['recovered']
-
-        ret_str =  '<b>-- {} --</b>'.format(country)
-        ret_str += '\nSmittede totalt: <b>{}</b>'.format(confirmed)
-        ret_str += '\nDødsfall: <b>{}</b>'.format(deaths)
-        #ret_str += '\nFriske: <b>{}</b>'.format(recovered)
-    else:
-        ret_str = 'Couldnt find country: ' + user_input
-
-    context.bot.send_message(chat_id=update.message.chat_id,
-                text=ret_str,
-                parse_mode=ParseMode.HTML)
 
 def tested_graph(update, context):
-    context.bot.send_photo(chat_id=update.message.chat_id,
+    context.bot.send_photo(
+        chat_id=update.message.chat_id,
         photo=graphs.tested())
 
+
 def confirmed_graph(update, context):
-    context.bot.send_photo(chat_id=update.message.chat_id,
-                photo=graphs.confirmed())
+    context.bot.send_photo(
+        chat_id=update.message.chat_id,
+        photo=graphs.confirmed())
+
 
 def dead_graph(update, context):
-    context.bot.send_photo(chat_id=update.message.chat_id,
-                photo=graphs.dead())
+    context.bot.send_photo(
+        chat_id=update.message.chat_id,
+        photo=graphs.dead())
+
 
 def hospitalized_graph(update, context):
-    context.bot.send_photo(chat_id=update.message.chat_id,
-                photo=graphs.hospitalized())
-
-def nordic_graph(update, context):
-    if context.args[0] == 'confirmed':
-        graph = graphs.nordic_confirmed()
-    elif context.args[0] == 'dead':
-        graph = graphs.nordic_dead()
-    elif context.args[0] == 'hospitalized':
-        graph = graphs.nordic_hospitalized()
-
-    context.bot.send_photo(chat_id=update.message.chat_id,
-                photo=graph)
-
-def nordic_confirmed_ma7(update, context):
-    context.bot.send_photo(chat_id=update.message.chat_id,
-                photo=graphs.nordic_confirmed_ma7())
-
-def country_graph(update, context):
-    country = ' '.join(context.args)
-    context.bot.send_photo(chat_id=update.message.chat_id,
-                photo=graphs.country_confirmed(country))
+    context.bot.send_photo(
+        chat_id=update.message.chat_id,
+        photo=graphs.hospitalized())
