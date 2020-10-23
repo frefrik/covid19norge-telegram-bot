@@ -56,7 +56,7 @@ def stats(update, context):
     dead_pct = round(dead_total / confirmed_total * 100, 1)
     respiratory_pct = round(respiratory_total / admissions_total * 100, 1)
 
-    ret_str = "<b>COVID-19</b>"
+    ret_str = "<b>COVID-19 Statistikk</b>"
     ret_str += f"\nTestede: <b>{tested_total:,}</b>"
     ret_str += f"\nSmittede: <b>{confirmed_total:,}</b> ({confirmed_pct}% av testede) "
     ret_str += f"\nDøde: <b>{dead_total:,}</b> ({dead_pct}% av smittede)"
