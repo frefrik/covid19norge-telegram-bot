@@ -25,10 +25,10 @@ def check_files_exist():
                  'respiratory']
 
     for filename in filenames:
-        if os.path.isfile('./data/' + filename + '.txt'):
+        if os.path.isfile(f'./data/{filename}.txt'):
             pass
         else:
-            print('datafile for ' + filename + ' missing. Creating file with latest data.')
+            print(f'datafile for {filename} missing. Creating file with latest data.')
             currentData = c19api.metadata(filename, 'total')
 
             file_write(filename, currentData)
@@ -39,7 +39,7 @@ def main():
     dp = updater.dispatcher
     jq = updater.job_queue
 
-    ''' Commands '''
+    # handlers
     commands = [('help', handlers.help),
                 ('chatid', handlers.chatid),
                 ('stats', handlers.stats),
@@ -51,6 +51,7 @@ def main():
     for (name, callback) in commands:
         dp.add_handler(CommandHandler(name, callback))
 
+    # jobs
     for job in bot['autopost']['jobs']:
         try:
             exec(job_initiate(job))
