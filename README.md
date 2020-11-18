@@ -67,12 +67,6 @@ Bot is live in this channel: [COVID-19 Norge](https://t.me/s/covid19norge)
 - /confirmed - Graf over smittede i Norge
 - /dead - Graf over dødsfall i Norge
 - /hospitalized - Graf over sykehusinnleggelser i Norge
-- /n confirmed - Graf over antall smittede per 100k innb. i Norge, Sverige, Danmark
-- /n dead - Graf over antall døde per 100k innb. i Norge, Sverige, Danmark
-- /n hospitalized - Graf over antall innlagte per 100k innb. i Norge, Sverige, Danmark
-- /ncon7 - Nye registrert smittet per dag (7 dager snitt - per 100k innb. i Norge, Sverige, Danmark)
-- /ws \<country\> - Antall smittet og døde i spesifisert land
-- /ws \<country\> - Graf over antall smittet i spesifisert land
 
 ## Installation
 
@@ -147,7 +141,7 @@ $ cp config/config.dist.yml config/onfig.yml
 
 ##### Start bot
 ```shell
-$ screen -dmS covid19norge python3 bot.py
+$ screen -dmS covid19norge python bot.py
 ```
 
 ##### Attaching to the screen
@@ -155,6 +149,5 @@ $ screen -dmS covid19norge python3 bot.py
 $ screen -r covid19norge
 ```
 
-## Data Sources
-- https://www.vg.no/spesial/2020/corona/
-- https://github.com/thohan88/covid19-nor-data
+## Datasource
+- [github.com/frefrik/c19norge-data](https://github.com/frefrik/c19norge-data) accessed through [c19norge.no/api](https://c19norge.no/api)
