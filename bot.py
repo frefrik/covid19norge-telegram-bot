@@ -1,73 +1,72 @@
-import logging
-import yaml
-import sys
 import os
-from telegram.ext import Updater, InlineQueryHandler, CommandHandler, MessageHandler, Filters
-from telegram import ParseMode
-from datetime import datetime, timedelta
-
-sys.path.append('./modules/')
-from utils import wait_seconds, midnight_seconds, job_initiate, job_enable
+from datetime import time
+import logging
+from telegram.ext import Updater, CommandHandler
+from modules.utils import load_config, file_write
+from modules.utils import job_initiate, job_enable, wait_seconds
+import modules.c19api as c19api
 import handlers
 import jobs
 
-with open('./config/config.yml', 'r') as ymlfile:
-    cfg = yaml.load(ymlfile, Loader=yaml.FullLoader)
+cfg = load_config()
 
-if not os.path.exists('./graphs/'):
-    os.makedirs('./graphs/')
-
-settings = cfg['bot']
-
-''' Error logging '''
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 logger = logging.getLogger(__name__)
+bot = cfg['bot']
 
-def error(update, context):
-    logger.warning('Update "%s" caused error "%s"', update, error)
 
-    if update.effective_message:
-        text = "Hey. I'm sorry to inform you that an error happened while I tried to handle your update."
-        update.effective_message.reply_text(text)
-    
-    raise
+def check_files_exist():
+    filenames = ['tested',
+                 'confirmed',
+                 'dead',
+                 'admissions',
+                 'respiratory']
+
+    for filename in filenames:
+        if os.path.isfile(f'./data/{filename}.txt'):
+            pass
+        else:
+            print(f'datafile for {filename} missing. Creating file with latest data.')
+            currentData = c19api.metadata(filename, 'total')
+
+            file_write(filename, currentData)
+
 
 def main():
-    updater = Updater(settings['token'], use_context=True)
+    updater = Updater(bot['token'], use_context=True)
     dp = updater.dispatcher
     jq = updater.job_queue
 
-    ''' Commands '''
+    # handlers
     commands = [('help', handlers.help),
                 ('chatid', handlers.chatid),
                 ('stats', handlers.stats),
                 ('tested', handlers.tested_graph),
                 ('confirmed', handlers.confirmed_graph),
                 ('dead', handlers.dead_graph),
-                ('hospitalized', handlers.hospitalized_graph),
-                ('n',handlers.nordic_graph),
-                ('ncon7',handlers.nordic_confirmed_ma7),
-                ('ws',handlers.world_stats),
-                ('wg',handlers.country_graph)]
+                ('hospitalized', handlers.hospitalized_graph)]
 
     for (name, callback) in commands:
         dp.add_handler(CommandHandler(name, callback))
 
-    ''' Jobs '''
-    for job in settings['autopost']['jobs']:
+    # jobs
+    for job in bot['autopost']['jobs']:
         try:
             exec(job_initiate(job))
             exec(job_enable(job))
-        except:
+        except Exception:
             print('Error initiating job:', job)
+            raise
 
-    # Error handler
-    dp.add_error_handler(error)
+    jq.run_daily(jobs.stats, time(hour=23, minute=30))
+    jq.run_daily(jobs.graph_all, time(hour=23, minute=31))
 
     updater.start_polling()
     updater.idle()
 
+
 if __name__ == '__main__':
+    check_files_exist()
     main()

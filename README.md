@@ -24,19 +24,19 @@ Bot is live in this channel: [COVID-19 Norge](https://t.me/s/covid19norge)
 ## Screenshots
 #### Live Updates
 <p align="left">
-<img height=600 alt="c19_live" src="https://user-images.githubusercontent.com/11590359/83899631-11284080-a759-11ea-905f-6d96f7a90f25.png">
-<img height=600 alt="c19_stats" src="https://user-images.githubusercontent.com/11590359/83899674-23a27a00-a759-11ea-8d9f-0129f2a0ae30.png">
+<img width=415 alt="c19_stats" src="https://user-images.githubusercontent.com/11590359/99575530-098fe780-29d9-11eb-9250-975274dbd8ce.png">
+<img width=415 alt="c19_live" src="https://user-images.githubusercontent.com/11590359/99575184-92f2ea00-29d8-11eb-902c-597becc9c524.png">
 </p>
 
 #### Graphs
 <p align="left">
-<img height=500 alt="c19_graphs-1" src="https://user-images.githubusercontent.com/11590359/83899708-31f09600-a759-11ea-94a1-117cfcc3a324.png">
-<img height=500 alt="c19_graphs-2" src="https://user-images.githubusercontent.com/11590359/83899716-33ba5980-a759-11ea-9c3c-0f5dbb0b2cc2.png">
+<img width=415 alt="c19_graphs-1" src="https://user-images.githubusercontent.com/11590359/99575030-66d76900-29d8-11eb-9489-69a7988a10ef.png">
+<img width=415 alt="c19_graphs-2" src="https://user-images.githubusercontent.com/11590359/99575102-78b90c00-29d8-11eb-80d8-2de2307a5ad4.png">
 </p>
 
 #### RSS
 <p align="left">
- <img width="497" alt="c19_rss" src="https://user-images.githubusercontent.com/11590359/83899729-387f0d80-a759-11ea-8f8b-b289e7a7cfc5.png">
+ <img width=500 alt="c19_rss" src="https://user-images.githubusercontent.com/11590359/99575788-6095bc80-29d9-11eb-8e58-62b368c8e304.png">
 </p>
 
 ## Features
@@ -44,21 +44,18 @@ Bot is live in this channel: [COVID-19 Norge](https://t.me/s/covid19norge)
 
 - **Live updates/events**
   - Tested
-  - Confirmed/Infected
-  - Dead
-  - Hospitalized
-  - Intensive Care
+  - Confirmed cases
+  - Deaths
+  - Admissions
   - Respiratory
-  - Quarantine Employees
-  - Infected Employees
 - **Graphs**
   - Tested
-  - Confirmed/Infected
+  - Confirmed
   - Dead
   - Hospitalized
-  - Nordic Confirmed/Dead
 - **RSS**
   - News from FHI (Folkehelseinstituttet)
+  - News from the goverment (Regjeringen)
 
 ### Available functions:
 - /help - Show commands
@@ -67,12 +64,6 @@ Bot is live in this channel: [COVID-19 Norge](https://t.me/s/covid19norge)
 - /confirmed - Graf over smittede i Norge
 - /dead - Graf over dødsfall i Norge
 - /hospitalized - Graf over sykehusinnleggelser i Norge
-- /n confirmed - Graf over antall smittede per 100k innb. i Norge, Sverige, Danmark
-- /n dead - Graf over antall døde per 100k innb. i Norge, Sverige, Danmark
-- /n hospitalized - Graf over antall innlagte per 100k innb. i Norge, Sverige, Danmark
-- /ncon7 - Nye registrert smittet per dag (7 dager snitt - per 100k innb. i Norge, Sverige, Danmark)
-- /ws \<country\> - Antall smittet og døde i spesifisert land
-- /ws \<country\> - Graf over antall smittet i spesifisert land
 
 ## Installation
 
@@ -147,7 +138,7 @@ $ cp config/config.dist.yml config/onfig.yml
 
 ##### Start bot
 ```shell
-$ screen -dmS covid19norge python3 bot.py
+$ screen -dmS covid19norge python bot.py
 ```
 
 ##### Attaching to the screen
@@ -155,6 +146,5 @@ $ screen -dmS covid19norge python3 bot.py
 $ screen -r covid19norge
 ```
 
-## Data Sources
-- https://www.vg.no/spesial/2020/corona/
-- https://github.com/thohan88/covid19-nor-data
+## Datasource
+- [github.com/frefrik/c19norge-data](https://github.com/frefrik/c19norge-data) accessed through [c19norge.no/api](https://c19norge.no/api)
