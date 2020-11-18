@@ -44,21 +44,18 @@ Bot is live in this channel: [COVID-19 Norge](https://t.me/s/covid19norge)
 
 - **Live updates/events**
   - Tested
-  - Confirmed/Infected
-  - Dead
-  - Hospitalized
-  - Intensive Care
+  - Confirmed cases
+  - Deaths
+  - Admissions
   - Respiratory
-  - Quarantine Employees
-  - Infected Employees
 - **Graphs**
   - Tested
-  - Confirmed/Infected
+  - Confirmed
   - Dead
   - Hospitalized
-  - Nordic Confirmed/Dead
 - **RSS**
   - News from FHI (Folkehelseinstituttet)
+  - News from the goverment (Regjeringen)
 
 ### Available functions:
 - /help - Show commands
