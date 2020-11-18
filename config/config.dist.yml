@@ -6,86 +6,61 @@ bot:
       rss_fhi:
         enabled: True
         interval: 5
-      stats:
+      rss_regjeringen:
         enabled: True
-        interval: 360
-      graph_tested:
-        enabled: True
-        interval: 1440
-      graph_confirmed:
-        enabled: True
-        interval: 1440
-      graph_dead:
-        enabled: True
-        interval: 1440
-      graph_hospitalized:
-        enabled: True
-        interval: 1440
-      nordic_confirmed_graph:
-        enabled: True
-        interval: 10080
-      nordic_dead_graph:
-        enabled: True
-        interval: 10080
+        interval: 5
+      tested:
+          enabled: True
+          interval: 5
+          text_pos_singular: ny registrert testet
+          text_pos_plural: nye registrert testet
+          source:
+            name: FHI
+            url:  https://www.fhi.no/sv/smittsomme-sykdommer/corona/dags--og-ukerapporter/dags--og-ukerapporter-om-koronavirus/
       confirmed:
         enabled: True
-        interval: 15
-        text_pos_singular: ny person smittet
-        text_pos_plural: nye personer smittet
-        text_neg_singular: ny person friskmeldt
-        text_neg_plural: nye personer friskmeldt
+        interval: 5
+        text_pos_singular: nytt registrert smittetilfelle
+        text_pos_plural: nye registrerte smittetilfeller
+        text_neg_singular: 
+        text_neg_plural: 
+        source:
+          name: MSIS
+          url: https://statistikk.fhi.no/msis
       dead:
         enabled: True
         interval: 5
         text_pos_singular: nytt dødsfall registrert
         text_pos_plural: nye dødsfall registrert
-        text_neg_singular: dødsfall fjernet fra registeret
-        text_neg_plural: dødsfall fjernet fra registeret
-      hospitalized:
+        text_neg_singular: 
+        text_neg_plural: 
+        source:
+          name: FHI
+          url: https://www.fhi.no/sv/smittsomme-sykdommer/corona/dags--og-ukerapporter/dags--og-ukerapporter-om-koronavirus/
+      admissions:
         enabled: True
-        interval: 60
-        text_pos_singular: ny person innlagt på sykehus
-        text_pos_plural: nye personer innlagt på sykehus
-        text_neg_singular: person skrevet ut av sykehus
-        text_neg_plural: personer skrevet ut av sykehus
-      intensiveCare:
-        enabled: True
-        interval: 60
-        text_pos_singular: ny person innlagt på intensivenhet
-        text_pos_plural: nye personer innlagt på intensivenhet
-        text_neg_singular: person skrevet ut av intensivenhet
-        text_neg_plural: personer skrevet ut av intensivenhet
+        interval: 5
+        text_pos_singular: person mer på sykehus
+        text_pos_plural: flere personer på sykehus
+        text_neg_singular: person mindre på sykehus
+        text_neg_plural: personer færre på sykehus
+        source:
+          name: Helsedirektoratet
+          url: https://www.helsedirektoratet.no/statistikk/antall-innlagte-pasienter-pa-sykehus-med-pavist-covid-19
       respiratory:
         enabled: True
-        interval: 60
-        text_pos_singular: ny person tilkoblet respirator
-        text_pos_plural: nye personer tilkoblet respirator
-        text_neg_singular: person frakoblet respirator
-        text_neg_plural: personer frakoblet respirator
-      quarantineEmployees:
-        enabled: False
-        interval: 60
-        text_pos_singular: helsepersonell satt i karantene
-        text_pos_plural: helsepersonell satt i karantene
-        text_neg_singular: helsepersonell tatt ut av karantene
-        text_neg_plural: helsepersonell tatt ut av karantene
-      infectedEmployees:
-        enabled: False
-        interval: 60
-        text_pos_singular: ny helsearbeider smittet
-        text_pos_plural: nye helsearbeidere smittet
-        text_neg_singular: helsearbeider friskmeldt
-        text_neg_plural: helsearbeidere friskmeldt
+        interval: 5
+        text_pos_singular: person mer på respirator
+        text_pos_plural: flere personer respirator
+        text_neg_singular: person mindre på respirator
+        text_neg_plural: personer færre på respirator
+        source:
+          name: Helsedirektoratet
+          url: https://www.helsedirektoratet.no/statistikk/antall-innlagte-pasienter-pa-sykehus-med-pavist-covid-19
   commands:
     title: "Commands"
-    stats: "/stats - COVID-19 statistikk Norge (Kilde: VG)"
-    tested: "/tested - Graf over testede i Norge (Kilde: VG)"
-    confirmed: "/confirmed - Graf over smittede i Norge (Kilde: VG)"
-    dead: "/dead - Graf over dødsfall i Norge (Kilde: VG)"
-    hospitalized: "/hospitalized - Graf over sykehusinnleggelser i Norge (Kilde: VG)"
-    n confirmed: "/n confirmed - Graf over antall smittede per 100k innb. i Norge, Sverige, Danmark (Kilde: VG)"
-    n dead: "/n dead - Graf over antall døde per 100k innb. i Norge, Sverige, Danmark (Kilde: VG)"
-    n hospitalized: "/n hospitalized - Graf over antall innlagte per 100k innb. i Norge, Sverige, Danmark (Kilde: VG)"
-    ncon7: "/ncon7 - Nye registrert smittet per dag (7 dager snitt - per 100k innb. i Norge, Sverige, Danmark) (Kilde: VG)"
-    ws: "/ws (country) - Antall smittet og døde i spesifisert land (Kilde: JHU CSSE)"
-    wg: "/wg (country) - Graf over antall smittet i spesifisert land (Kilde: JHU CSSE)"
+    stats: "/stats - COVID-19 statistikk Norge"
+    tested: "/tested - Graf over testede i Norge"
+    confirmed: "/confirmed - Graf over smittede i Norge"
+    dead: "/dead - Graf over dødsfall i Norge"
+    hospitalized: "/hospitalized - Graf over sykehusinnleggelser i Norge"
