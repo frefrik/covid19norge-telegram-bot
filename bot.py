@@ -60,8 +60,8 @@ def main():
             print('Error initiating job:', job)
             raise
 
-    jq.run_daily(jobs.stats, time(hour=22, minute=30))
-    jq.run_daily(jobs.graph_all, time(hour=22, minute=31))
+    jq.run_daily(jobs.stats, time(hour=23, minute=30))
+    jq.run_daily(jobs.graph_all, time(hour=23, minute=31))
 
     updater.start_polling()
     updater.idle()

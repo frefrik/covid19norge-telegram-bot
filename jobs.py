@@ -1,5 +1,5 @@
 from time import sleep
-from datetime import datetime
+from datetime import datetime, date, timedelta
 from telegram import ParseMode
 from modules.utils import load_config, get_messagetext, get_timestr
 from modules.utils import file_open, file_write
@@ -13,6 +13,8 @@ jobs = bot['autopost']['jobs']
 
 
 def stats(context):
+    yesterday = (date.today() - timedelta(days=1)).strftime('%d.%m.%Y')
+
     # metadata
     tested = c19api.metadata('tested')
     confirmed = c19api.metadata('confirmed')
@@ -27,34 +29,30 @@ def stats(context):
     admissions_total = admissions.get('total')
     respiratory_total = respiratory.get('total')
 
-    # newToday
-    tested_newToday = tested.get('newToday', 0)
-    confirmed_newToday = confirmed.get('newToday', 0)
-    dead_newToday = dead.get('newToday', 0)
-
     # newYesterday
     tested_newYesterday = tested.get('newYesterday', 0)
     confirmed_newYesterday = confirmed.get('newYesterday', 0)
     dead_newYesterday = dead.get('newYesterday', 0)
 
+    # newSince
+    confirmed_newSince_d7 = confirmed.get('newSince_d8', 0)
+    confirmed_newSince_d14 = confirmed.get('newSince_d15', 0)
+
     # percentages
-    confirmed_pct = round(confirmed_total / tested_total * 100, 1)
     dead_pct = round(dead_total / confirmed_total * 100, 1)
     respiratory_pct = round(respiratory_total / admissions_total * 100, 1)
 
-    ret_str = "<b>COVID-19 Statistikk</b>"
-    ret_str += f"\nTestede: <b>{tested_total:,}</b>"
-    ret_str += f"\nSmittede: <b>{confirmed_total:,}</b> ({confirmed_pct}% av testede) "
-    ret_str += f"\nDøde: <b>{dead_total:,}</b> ({dead_pct}% av smittede)"
-    ret_str += "\n\n<b>Pasienter på sykehus</b>"
-    ret_str += f"\nInnlagt: <b>{admissions_total:,}</b>"
-    ret_str += f"\nTilkoblet respirator: <b>{respiratory_total:,}</b> ({respiratory_pct}% av innlagte)"
-    ret_str += f"\n\nTestede i dag: <b>{tested_newToday:,}</b>"
-    ret_str += f"\nTestede i går: <b>{tested_newYesterday:,}</b>"
-    ret_str += f"\nSmittede i dag: <b>{confirmed_newToday:,}</b>"
-    ret_str += f"\nSmittede i går: <b>{confirmed_newYesterday:,}</b>"
-    ret_str += f"\nDødsfall i dag: <b>{dead_newToday:,}</b>"
-    ret_str += f"\nDødsfall i går: <b>{dead_newYesterday:,}</b>"
+    ret_str = f"🔢 <b>Nøkkeltall - {yesterday}</b>"
+    ret_str += f"\n\n🦠 Smittetilfeller siste døgn: <b>{confirmed_newYesterday:,}</b>"
+    ret_str += f"\nSiste 7d: <b>{confirmed_newSince_d7:,}</b>"
+    ret_str += f"\nSiste 14d: <b>{confirmed_newSince_d14:,}</b>"
+    ret_str += f"\nTotalt: <b>{confirmed_total:,}</b>"
+    ret_str += f"\n\n❗ Dødsfall siste døgn: <b>{dead_newYesterday:,}</b>"
+    ret_str += f"\nTotalt: <b>{dead_total:,}</b> ({dead_pct}% av smittede)"
+    ret_str += f"\n\n🔬 Testede siste døgn: <b>{tested_newYesterday:,}</b>"
+    ret_str += f"\nTotalt: <b>{tested_total:,}</b>"
+    ret_str += f"\n\n🏥 Innlagt på sykehus: <b>{admissions_total:,}</b>"
+    ret_str += f"\n😷 Tilkoblet respirator: <b>{respiratory_total:,}</b> ({respiratory_pct}% av innlagte)"
 
     ret_str = ret_str.replace(',', ' ')
 
@@ -62,6 +60,42 @@ def stats(context):
         chat_id=bot['autopost']['chatid'],
         text=ret_str,
         parse_mode=ParseMode.HTML)
+
+
+def tested(context):
+    timestr = get_timestr()
+    data = c19api.metadata('tested')
+    total = data.get('total')
+
+    last_data = file_open('tested')
+
+    tested_diff = total - int(last_data)
+
+    if tested_diff > 0:
+        messagetext = get_messagetext('tested', tested_diff)
+
+        ret_str = f"{timestr} - 🔬 <b>{tested_diff:,}</b> {messagetext}"
+
+        if datetime.now().hour in range(0, 2):
+            newYesterday = data.get('newYesterday')
+
+            ret_str += f"\n{timestr} - Totalt: <b>{total:,}</b> (Nye siste døgn: <b>{newYesterday:,}</b>)"
+        else:
+            newToday = data.get('newToday')
+
+            ret_str += f"\n{timestr} - Totalt: <b>{total:,}</b> (Nye i dag: <b>{newToday:,}</b>)"
+
+        file_write('tested', total)
+
+        ret_str = ret_str.replace(',', ' ')
+        print(ret_str, '\n')
+
+        context.bot.send_message(
+            chat_id=bot['autopost']['chatid'],
+            text=ret_str,
+            parse_mode=ParseMode.HTML)
+    else:
+        return None
 
 
 def confirmed(context):
