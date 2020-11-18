@@ -4,6 +4,7 @@ config.yml
 *.txt
 graphs/
 .vscode/
+lookup/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
