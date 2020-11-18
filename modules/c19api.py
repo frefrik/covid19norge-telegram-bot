@@ -4,8 +4,8 @@ API_URL = 'https://c19norge.no/api/v1'
 
 
 def metadata(category, subcategory=None):
-    res = requests.get(f'{API_URL}/metadata').json()
-    meta = res['metadata']
+    res = requests.get(f'{API_URL}/current').json()
+    meta = res['data']
 
     if subcategory:
         data = meta.get(category, {}).get(subcategory)
@@ -16,9 +16,7 @@ def metadata(category, subcategory=None):
 
 
 def timeseries(category):
-    res = requests.get(f'{API_URL}/timeseries').json()
-    meta = res['timeseries']
-
-    data = meta.get(category)
+    res = requests.get(f'{API_URL}/timeseries/{category}').json()
+    data = res[category]
 
     return data
