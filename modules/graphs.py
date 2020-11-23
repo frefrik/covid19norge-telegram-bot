@@ -102,15 +102,14 @@ def tested():
 def confirmed():
     data = c19api.timeseries('confirmed')
 
-    yesterday = date.today() - timedelta(days=1)
     filename = './graphs/no_confirmed.png'
     if os.path.exists(filename):
         os.remove(filename)
 
     df = pd.DataFrame(data)
     df['date'] = pd.to_datetime(df['date'])
-    df = df[df.date <= str(yesterday)]
-    df['new_sma7'] = df.new.rolling(window=7).mean()
+    df = df.loc[df['source'] == 'fhi:git']
+    df['new_sma7'] = df.new.rolling(window=7).mean().shift()
 
     df = df.melt(
         id_vars=['date'],
