@@ -35,10 +35,10 @@ def tested():
         title='Antall personer testet for covid-19 per dag og andel positive blant disse (Kilde: FHI)'
     ).encode(
         alt.X(
-            'monthdate(date):O',
+            'yearmonthdate(date):O',
             axis=alt.Axis(
                 title=None,
-                labelAngle=-45
+                labelAngle=-40
             )
         )
     )
@@ -131,10 +131,10 @@ def confirmed():
         title='Antall meldte COVID-19 tilfeller etter prøvetakingsdato (Kilde: FHI/MSIS)'
     ).encode(
         alt.X(
-            'monthdate(date):O',
+            'yearmonthdate(date):O',
             axis=alt.Axis(
                 title=None,
-                labelAngle=-45
+                labelAngle=-40
             )
         )
     )
@@ -251,10 +251,10 @@ def dead():
         title='COVID-19 dødsfall (Kilde: FHI)'
     ).encode(
         alt.X(
-            'monthdate(date):O',
+            'yearmonthdate(date):O',
             axis=alt.Axis(
                 title=None,
-                labelAngle=-45
+                labelAngle=-40
             )
         )
     )
@@ -362,10 +362,10 @@ def hospitalized():
         opacity=0.3
     ).encode(
         x=alt.X(
-            'monthdate(date):O',
+            'yearmonthdate(date):O',
             axis=alt.Axis(
                 title=None,
-                labelAngle=-45
+                labelAngle=-40
             )
         ),
         y=alt.Y(
