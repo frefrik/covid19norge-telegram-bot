@@ -46,14 +46,18 @@ def fhi():
     for post in feed.entries:
         title = post.title
         url = post.link
-        content = post.description
+        try:
+            content = post.description
+        except Exception:
+            content = None
 
         if post.link in db:
             break
 
         if contains_wanted(title.lower()):
             ret_str = '\n<b>{}</b>'.format(title)
-            ret_str += '\n{}'.format(content)
+            if content:
+                ret_str += '\n{}'.format(content)
             ret_str += '\n\n{}'.format(url)
 
             db[post.link] = True
@@ -71,14 +75,18 @@ def regjeringen():
     for post in feed.entries:
         title = post.title
         url = post.link.split("?utm_source")[0]
-        content = post.description
+        try:
+            content = post.description
+        except Exception:
+            content = None
 
         if url in db:
             break
 
         if regjeringen_contains_wanted(title.lower()):
             ret_str = '\n<b>{}</b>'.format(title)
-            ret_str += '\n{}'.format(content)
+            if content:
+                ret_str += '\n{}'.format(content)
             ret_str += '\n\n{}'.format(url)
 
             db[url] = True
