@@ -5,53 +5,53 @@ import modules.graphs as graphs
 import modules.c19api as c19api
 
 cfg = load_config()
-settings = cfg['bot']
+settings = cfg["bot"]
 
 
 def chatid(update, context):
     context.bot.send_message(
         chat_id=update.message.chat_id,
-        text="Chatid: {}".format(update.message.chat_id),
-        parse_mode=ParseMode.HTML)
+        text=f"Chatid: {update.message.chat_id}",
+        parse_mode=ParseMode.HTML,
+    )
 
 
 def help(update, context):
-    menuitems = '<b>' + settings['commands']['title'] + '</b>\n'
+    menuitems = "<b>" + settings["commands"]["title"] + "</b>\n"
 
-    for command in list(settings['commands'].items())[1:]:
-        menuitems += command[1] + '\n'
+    for command in list(settings["commands"].items())[1:]:
+        menuitems += command[1] + "\n"
 
     context.bot.send_message(
-        chat_id=update.message.chat_id,
-        text=menuitems,
-        parse_mode=ParseMode.HTML)
+        chat_id=update.message.chat_id, text=menuitems, parse_mode=ParseMode.HTML
+    )
 
 
 def stats(update, context):
-    today = date.today().strftime('%d.%m.%Y')
+    today = date.today().strftime("%d.%m.%Y")
 
     # metadata
-    tested = c19api.metadata('tested')
-    confirmed = c19api.metadata('confirmed')
-    dead = c19api.metadata('dead')
-    admissions = c19api.metadata('admissions')
-    respiratory = c19api.metadata('respiratory')
+    tested = c19api.metadata("tested")
+    confirmed = c19api.metadata("confirmed")
+    dead = c19api.metadata("dead")
+    admissions = c19api.metadata("admissions")
+    respiratory = c19api.metadata("respiratory")
 
     # totals
-    tested_total = tested.get('total')
-    confirmed_total = confirmed.get('total')
-    dead_total = dead.get('total')
-    admissions_total = admissions.get('total')
-    respiratory_total = respiratory.get('total')
+    tested_total = tested.get("total")
+    confirmed_total = confirmed.get("total")
+    dead_total = dead.get("total")
+    admissions_total = admissions.get("total")
+    respiratory_total = respiratory.get("total")
 
     # newToday
-    tested_newToday = tested.get('newToday', 0)
-    confirmed_newToday = confirmed.get('newToday', 0)
-    dead_newToday = dead.get('newToday', 0)
+    tested_newToday = tested.get("newToday", 0)
+    confirmed_newToday = confirmed.get("newToday", 0)
+    dead_newToday = dead.get("newToday", 0)
 
     # newSince
-    confirmed_newSince_d7 = confirmed.get('newSince_d7', 0)
-    confirmed_newSince_d14 = confirmed.get('newSince_d14', 0)
+    confirmed_newSince_d7 = confirmed.get("newSince_d7", 0)
+    confirmed_newSince_d14 = confirmed.get("newSince_d14", 0)
 
     # percentages
     dead_pct = round(dead_total / confirmed_total * 100, 1)
@@ -70,33 +70,24 @@ def stats(update, context):
     ret_str += f"\n\n🏥 Innlagt på sykehus: <b>{admissions_total:,}</b>"
     ret_str += f"\n😷 Tilkoblet respirator: <b>{respiratory_total:,}</b> ({respiratory_pct}% av innlagte)"
 
-    ret_str = ret_str.replace(',', ' ')
+    ret_str = ret_str.replace(",", " ")
 
     context.bot.send_message(
-        chat_id=update.message.chat_id,
-        text=ret_str,
-        parse_mode=ParseMode.HTML)
+        chat_id=update.message.chat_id, text=ret_str, parse_mode=ParseMode.HTML
+    )
 
 
 def tested_graph(update, context):
-    context.bot.send_photo(
-        chat_id=update.message.chat_id,
-        photo=graphs.tested())
+    context.bot.send_photo(chat_id=update.message.chat_id, photo=graphs.tested())
 
 
 def confirmed_graph(update, context):
-    context.bot.send_photo(
-        chat_id=update.message.chat_id,
-        photo=graphs.confirmed())
+    context.bot.send_photo(chat_id=update.message.chat_id, photo=graphs.confirmed())
 
 
 def dead_graph(update, context):
-    context.bot.send_photo(
-        chat_id=update.message.chat_id,
-        photo=graphs.dead())
+    context.bot.send_photo(chat_id=update.message.chat_id, photo=graphs.dead())
 
 
 def hospitalized_graph(update, context):
-    context.bot.send_photo(
-        chat_id=update.message.chat_id,
-        photo=graphs.hospitalized())
+    context.bot.send_photo(chat_id=update.message.chat_id, photo=graphs.hospitalized())

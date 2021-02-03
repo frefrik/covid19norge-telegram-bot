@@ -10,54 +10,53 @@ import jobs
 
 cfg = load_config()
 
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
 
 logger = logging.getLogger(__name__)
-bot = cfg['bot']
+bot = cfg["bot"]
 
 
 def check_files_exist():
-    filenames = ['tested',
-                 'confirmed',
-                 'dead',
-                 'admissions',
-                 'respiratory']
+    filenames = ["tested", "confirmed", "dead", "admissions", "respiratory"]
 
     for filename in filenames:
-        if os.path.isfile(f'./data/{filename}.txt'):
+        if os.path.isfile(f"./data/{filename}.txt"):
             pass
         else:
-            print(f'datafile for {filename} missing. Creating file with latest data.')
-            currentData = c19api.metadata(filename, 'total')
+            print(f"datafile for {filename} missing. Creating file with latest data.")
+            currentData = c19api.metadata(filename, "total")
 
             file_write(filename, currentData)
 
 
 def main():
-    updater = Updater(bot['token'], use_context=True)
+    updater = Updater(bot["token"], use_context=True)
     dp = updater.dispatcher
     jq = updater.job_queue
 
     # handlers
-    commands = [('help', handlers.help),
-                ('chatid', handlers.chatid),
-                ('stats', handlers.stats),
-                ('tested', handlers.tested_graph),
-                ('confirmed', handlers.confirmed_graph),
-                ('dead', handlers.dead_graph),
-                ('hospitalized', handlers.hospitalized_graph)]
+    commands = [
+        ("help", handlers.help),
+        ("chatid", handlers.chatid),
+        ("stats", handlers.stats),
+        ("tested", handlers.tested_graph),
+        ("confirmed", handlers.confirmed_graph),
+        ("dead", handlers.dead_graph),
+        ("hospitalized", handlers.hospitalized_graph),
+    ]
 
     for (name, callback) in commands:
         dp.add_handler(CommandHandler(name, callback))
 
     # jobs
-    for job in bot['autopost']['jobs']:
+    for job in bot["autopost"]["jobs"]:
         try:
             exec(job_initiate(job))
             exec(job_enable(job))
         except Exception:
-            print('Error initiating job:', job)
+            print("Error initiating job:", job)
             raise
 
     jq.run_daily(jobs.stats, time(hour=23, minute=30))
@@ -67,6 +66,6 @@ def main():
     updater.idle()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     check_files_exist()
     main()

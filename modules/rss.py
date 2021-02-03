@@ -1,21 +1,23 @@
 import feedparser
 from sqlitedict import SqliteDict
 
-db = SqliteDict('./data/rss_database.sqlite', 'rss', autocommit=True)
+db = SqliteDict("./data/rss_database.sqlite", "rss", autocommit=True)
 
-regjeringen_key_words = ['pressekonferanse']
+regjeringen_key_words = ["pressekonferanse"]
 
-key_words = ['korona',
-             'intensiv',
-             'covid',
-             'smitte',
-             'app',
-             'rød',
-             'grøn',
-             'hurtigrut',
-             'utbrudd',
-             'karantene',
-             'reiser']
+key_words = [
+    "korona",
+    "intensiv",
+    "covid",
+    "smitte",
+    "app",
+    "rød",
+    "grøn",
+    "hurtigrut",
+    "utbrudd",
+    "karantene",
+    "reiser",
+]
 
 
 def select_all():
@@ -40,7 +42,7 @@ def regjeringen_contains_wanted(in_str):
 
 
 def fhi():
-    feed_url = 'https://fhi.no/rss/nyheter/'
+    feed_url = "https://fhi.no/rss/nyheter/"
     feed = feedparser.parse(feed_url)
 
     for post in feed.entries:
@@ -55,10 +57,10 @@ def fhi():
             break
 
         if contains_wanted(title.lower()):
-            ret_str = '\n<b>{}</b>'.format(title)
+            ret_str = f"\n<b>{title}</b>"
             if content:
-                ret_str += '\n{}'.format(content)
-            ret_str += '\n\n{}'.format(url)
+                ret_str += f"\n{content}"
+            ret_str += f"\n\n{url}"
 
             db[post.link] = True
 
@@ -69,7 +71,7 @@ def fhi():
 
 
 def regjeringen():
-    feed_url = 'https://www.regjeringen.no/no/rss/Rss/2581966/?topic=2692388&documentType=aktuelt/nyheter'
+    feed_url = "https://www.regjeringen.no/no/rss/Rss/2581966/?topic=2692388&documentType=aktuelt/nyheter"
     feed = feedparser.parse(feed_url)
 
     for post in feed.entries:
@@ -84,10 +86,10 @@ def regjeringen():
             break
 
         if regjeringen_contains_wanted(title.lower()):
-            ret_str = '\n<b>{}</b>'.format(title)
+            ret_str = f"\n<b>{title}</b>"
             if content:
-                ret_str += '\n{}'.format(content)
-            ret_str += '\n\n{}'.format(url)
+                ret_str += f"\n{content}"
+            ret_str += f"\n\n{url}"
 
             db[url] = True
 
