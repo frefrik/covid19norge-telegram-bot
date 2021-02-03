@@ -91,3 +91,22 @@ def dead_graph(update, context):
 
 def hospitalized_graph(update, context):
     context.bot.send_photo(chat_id=update.message.chat_id, photo=graphs.hospitalized())
+
+
+def smittestopp_graph(update, context):
+    try:
+        if context.args[0] == "downloads":
+            graph = graphs.smittestopp_downloads()
+        if context.args[0] == "reported":
+            graph = graphs.smittestopp_reported()
+    except IndexError:
+        graph = None
+
+    if graph:
+        context.bot.send_photo(chat_id=update.message.chat_id, photo=graph)
+    else:
+        context.bot.send_message(
+            chat_id=update.message.chat_id,
+            text="Usage: /smittestopp &lt;downloads/reported&gt;",
+            parse_mode=ParseMode.HTML,
+        )

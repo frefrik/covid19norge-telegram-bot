@@ -310,3 +310,151 @@ def hospitalized():
     save(chart, filename)
 
     return open(filename, "rb")
+
+
+def smittestopp_downloads():
+    data = c19api.timeseries("smittestopp")
+
+    filename = "./graphs/no_smittestopp.png"
+    if os.path.exists(filename):
+        os.remove(filename)
+
+    df = pd.DataFrame(data)
+    df["date"] = pd.to_datetime(df["date"])
+
+    df = df.melt(
+        id_vars=["date"],
+        value_vars=["new_downloads", "total_downloads"],
+        var_name="category",
+        value_name="value",
+    ).dropna()
+
+    rename = {
+        "new_downloads": "Nye",
+        "total_downloads": "Akkumulert",
+    }
+
+    df["category"] = df["category"].replace(rename)
+
+    base = alt.Chart(
+        df, title="Antall nedlastinger av appen Smittestopp (Kilde: FHI)"
+    ).encode(alt.X("yearmonthdate(date):O", axis=alt.Axis(title=None, labelAngle=-40)))
+
+    bar = (
+        base.transform_filter(alt.datum.category == "Nye")
+        .mark_bar(color="#5BC1FF")
+        .encode(y=alt.Y("value:Q", axis=alt.Axis(title="Nye per dag", grid=True)))
+    )
+
+    line = (
+        base.transform_filter(alt.datum.category == "Akkumulert")
+        .mark_line(color="#00008b", strokeWidth=3)
+        .encode(
+            y=alt.Y("value:Q", axis=alt.Axis(title="Akkumulert")),
+            color=alt.Color(
+                "category:N",
+                scale=alt.Scale(
+                    domain=["Nye", "Akkumulert"],
+                    range=["#5BC1FF", "#00008b"],
+                ),
+                legend=alt.Legend(title=None),
+            ),
+        )
+    )
+
+    chart = (
+        alt.layer(bar, line)
+        .resolve_scale(y="independent")
+        .properties(width=1200, height=600)
+        .configure_legend(
+            strokeColor="gray",
+            fillColor="#FFFFFF",
+            labelFontSize=12,
+            symbolStrokeWidth=2,
+            symbolSize=160,
+            padding=6,
+            cornerRadius=5,
+            direction="horizontal",
+            orient="none",
+            legendX=480,
+            legendY=650,
+        )
+    )
+
+    save(chart, filename)
+
+    return open(filename, "rb")
+
+
+def smittestopp_reported():
+    data = c19api.timeseries("smittestopp")
+
+    filename = "./graphs/no_smittestopp.png"
+    if os.path.exists(filename):
+        os.remove(filename)
+
+    df = pd.DataFrame(data)
+    df["date"] = pd.to_datetime(df["date"])
+
+    df = df.melt(
+        id_vars=["date"],
+        value_vars=["new_reported", "total_reported"],
+        var_name="category",
+        value_name="value",
+    ).dropna()
+
+    rename = {
+        "new_reported": "Nye",
+        "total_reported": "Akkumulert",
+    }
+
+    df["category"] = df["category"].replace(rename)
+
+    base = alt.Chart(
+        df, title="Antall meldt smittet gjennom appen Smittestopp (Kilde: FHI)"
+    ).encode(alt.X("yearmonthdate(date):O", axis=alt.Axis(title=None, labelAngle=-40)))
+
+    bar = (
+        base.transform_filter(alt.datum.category == "Nye")
+        .mark_bar(color="#FFA57E")
+        .encode(y=alt.Y("value:Q", axis=alt.Axis(title="Nye per dag", grid=True)))
+    )
+
+    line = (
+        base.transform_filter(alt.datum.category == "Akkumulert")
+        .mark_line(color="#FF2B2B", strokeWidth=3)
+        .encode(
+            y=alt.Y("value:Q", axis=alt.Axis(title="Akkumulert")),
+            color=alt.Color(
+                "category:N",
+                scale=alt.Scale(
+                    domain=["Nye", "Akkumulert"],
+                    range=["#FFA57E", "#FF2B2B"],
+                ),
+                legend=alt.Legend(title=None),
+            ),
+        )
+    )
+
+    chart = (
+        alt.layer(bar, line)
+        .resolve_scale(y="independent")
+        .properties(width=1200, height=600)
+        .configure_legend(
+            strokeColor="gray",
+            fillColor="#FFFFFF",
+            labelFontSize=12,
+            symbolStrokeWidth=2,
+            symbolSize=160,
+            padding=6,
+            cornerRadius=5,
+            direction="horizontal",
+            orient="none",
+            legendX=480,
+            legendY=650,
+        )
+    )
+
+    save(chart, filename)
+
+    return open(filename, "rb")

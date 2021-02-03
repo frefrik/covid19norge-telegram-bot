@@ -45,6 +45,7 @@ def main():
         ("confirmed", handlers.confirmed_graph),
         ("dead", handlers.dead_graph),
         ("hospitalized", handlers.hospitalized_graph),
+        ("smittestopp", handlers.smittestopp_graph),
     ]
 
     for (name, callback) in commands:
