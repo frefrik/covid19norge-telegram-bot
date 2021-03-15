@@ -458,3 +458,72 @@ def smittestopp_reported():
     save(chart, filename)
 
     return open(filename, "rb")
+
+
+def vaccine_doses():
+    data = c19api.timeseries("vaccine_doses")
+
+    filename = "./graphs/no_vaccine_doses.png"
+    if os.path.exists(filename):
+        os.remove(filename)
+
+    df = pd.DataFrame(data)
+    df["date"] = pd.to_datetime(df["date"])
+    df = df[df["granularity_geo"] == "nation"]
+    df["new_sma7"] = df.new_doses.rolling(window=7).mean().shift()
+
+    df = df.melt(
+        id_vars=["date"],
+        value_vars=["total_dose_1", "total_dose_2"],
+        var_name="category",
+        value_name="value",
+    ).dropna()
+
+    rename = {
+        "total_dose_1": "Har fått minst én dose",
+        "total_dose_2": "Fullvaksinert",
+    }
+
+    df["category"] = df["category"].replace(rename)
+
+    chart = (
+        alt.Chart(
+            df,
+            title="Antall personer vaksinert med 1. og 2. dose av vaksine mot COVID-19 i Norge (Kilde: FHI)",
+        )
+        .mark_area(line={}, opacity=0.3)
+        .encode(
+            x=alt.X("yearmonthdate(date):O", axis=alt.Axis(title=None, labelAngle=-40)),
+            y=alt.Y(
+                "value:Q",
+                stack=None,
+                title="Antall",
+            ),
+            color=alt.Color(
+                "category:N",
+                scale=alt.Scale(
+                    domain=["Har fått minst én dose", "Fullvaksinert"],
+                    range=["#5dade2", " #2ecc71"],
+                ),
+                legend=alt.Legend(title=None),
+            ),
+        )
+        .properties(width=1200, height=600)
+        .configure_legend(
+            strokeColor="gray",
+            fillColor="#FFFFFF",
+            labelFontSize=12,
+            symbolStrokeWidth=2,
+            symbolSize=160,
+            padding=6,
+            cornerRadius=5,
+            direction="horizontal",
+            orient="none",
+            legendX=480,
+            legendY=660,
+        )
+    )
+
+    save(chart, filename)
+
+    return open(filename, "rb")

@@ -93,6 +93,10 @@ def hospitalized_graph(update, context):
     context.bot.send_photo(chat_id=update.message.chat_id, photo=graphs.hospitalized())
 
 
+def vaccine_doses_graph(update, context):
+    context.bot.send_photo(chat_id=update.message.chat_id, photo=graphs.vaccine_doses())
+
+
 def smittestopp_graph(update, context):
     try:
         if context.args[0] == "downloads":

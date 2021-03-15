@@ -236,3 +236,5 @@ def graph_all(context):
     context.bot.send_photo(chat_id, graphs.dead())
     sleep(2)
     context.bot.send_photo(chat_id, graphs.hospitalized())
+    sleep(2)
+    context.bot.send_photo(chat_id, graphs.vaccine_doses())

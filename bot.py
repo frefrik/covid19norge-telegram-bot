@@ -46,6 +46,7 @@ def main():
         ("dead", handlers.dead_graph),
         ("hospitalized", handlers.hospitalized_graph),
         ("smittestopp", handlers.smittestopp_graph),
+        ("vaccine", handlers.vaccine_doses_graph),
     ]
 
     for (name, callback) in commands:
