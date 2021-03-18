@@ -31,11 +31,13 @@ def stats(update, context):
     today = date.today().strftime("%d.%m.%Y")
 
     # metadata
+    population = 5391369
     tested = c19api.metadata("tested")
     confirmed = c19api.metadata("confirmed")
     dead = c19api.metadata("dead")
     admissions = c19api.metadata("admissions")
     respiratory = c19api.metadata("respiratory")
+    vaccine_doses = c19api.timeseries("vaccine_doses")
 
     # totals
     tested_total = tested.get("total")
@@ -57,18 +59,34 @@ def stats(update, context):
     dead_pct = round(dead_total / confirmed_total * 100, 1)
     respiratory_pct = round(respiratory_total / admissions_total * 100, 1)
 
+    # vaccine data
+    vaccine_data = list(
+        filter(lambda x: x["granularity_geo"] == "nation", vaccine_doses)
+    )[-1]
+    vacc_total_dose_1 = vaccine_data.get("total_dose_1")
+    vacc_total_dose_2 = vaccine_data.get("total_dose_2")
+    vacc_total_dose_1_pct = vacc_total_dose_1 / population
+    vacc_total_dose_2_pct = vacc_total_dose_2 / population
+
     ret_str = f"🔢 <b>Nøkkeltall - {today}</b>"
+
     ret_str += f"\n\n🦠 Smittetilfeller i dag: <b>{confirmed_newToday:,}</b>"
     ret_str += f"\nSiste 7d: <b>{confirmed_newSince_d7:,}</b>"
     ret_str += f"\nSiste 14d: <b>{confirmed_newSince_d14:,}</b>"
     ret_str += f"\nTotalt: <b>{confirmed_total:,}</b>"
+
     ret_str += f"\n\n❗ Dødsfall i dag: <b>{dead_newToday:,}</b>"
     ret_str += f"\nTotalt: <b>{dead_total:,}</b> ({dead_pct}% av smittede)"
+
     ret_str += f"\n\n🔬 Testede i dag: <b>{tested_newToday:,}</b>"
     ret_str += f"\nTotalt: <b>{tested_total:,}</b>"
 
     ret_str += f"\n\n🏥 Innlagt på sykehus: <b>{admissions_total:,}</b>"
     ret_str += f"\n😷 Tilkoblet respirator: <b>{respiratory_total:,}</b> ({respiratory_pct}% av innlagte)"
+
+    ret_str += "\n\n💉 Andel av befolkningen vaksinert"
+    ret_str += f"\n<b>{vacc_total_dose_1_pct:,.02%}</b> har fått minst én dose (<b>{vacc_total_dose_1:,}</b> personer)"
+    ret_str += f"\n<b>{vacc_total_dose_2_pct:,.02%}</b> er fullvaksinert (<b>{vacc_total_dose_2:,}</b> personer)"
 
     ret_str = ret_str.replace(",", " ")
 
