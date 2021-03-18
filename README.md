@@ -48,11 +48,13 @@ Bot is live in this channel: [COVID-19 Norge](https://t.me/s/covid19norge)
   - Deaths
   - Admissions
   - Respiratory
+  - Vaccine doses
 - **Graphs**
   - Tested
   - Confirmed
   - Dead
   - Hospitalized
+  - Vaccine doses
 - **RSS**
   - News from FHI (Folkehelseinstituttet)
   - News from the goverment (Regjeringen)
@@ -64,6 +66,7 @@ Bot is live in this channel: [COVID-19 Norge](https://t.me/s/covid19norge)
 - /confirmed - Graf over smittede i Norge
 - /dead - Graf over dødsfall i Norge
 - /hospitalized - Graf over sykehusinnleggelser i Norge
+- /vaccine - Graf over antall personer vaksinert i Norge
 
 ## Installation
 

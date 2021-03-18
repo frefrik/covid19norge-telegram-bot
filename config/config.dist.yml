@@ -10,20 +10,20 @@ bot:
         enabled: True
         interval: 5
       tested:
-          enabled: True
-          interval: 5
-          text_pos_singular: ny registrert testet
-          text_pos_plural: nye registrert testet
-          source:
-            name: FHI
-            url:  https://www.fhi.no/sv/smittsomme-sykdommer/corona/dags--og-ukerapporter/dags--og-ukerapporter-om-koronavirus/
+        enabled: True
+        interval: 5
+        text_pos_singular: ny registrert testet
+        text_pos_plural: nye registrert testet
+        source:
+          name: FHI
+          url: https://www.fhi.no/sv/smittsomme-sykdommer/corona/dags--og-ukerapporter/dags--og-ukerapporter-om-koronavirus/
       confirmed:
         enabled: True
         interval: 5
         text_pos_singular: nytt registrert smittetilfelle
         text_pos_plural: nye registrerte smittetilfeller
-        text_neg_singular: 
-        text_neg_plural: 
+        text_neg_singular:
+        text_neg_plural:
         source:
           name: MSIS
           url: https://statistikk.fhi.no/msis
@@ -32,8 +32,8 @@ bot:
         interval: 5
         text_pos_singular: nytt dødsfall registrert
         text_pos_plural: nye dødsfall registrert
-        text_neg_singular: 
-        text_neg_plural: 
+        text_neg_singular:
+        text_neg_plural:
         source:
           name: FHI
           url: https://www.fhi.no/sv/smittsomme-sykdommer/corona/dags--og-ukerapporter/dags--og-ukerapporter-om-koronavirus/
@@ -57,6 +57,12 @@ bot:
         source:
           name: Helsedirektoratet
           url: https://www.helsedirektoratet.no/statistikk/antall-innlagte-pasienter-pa-sykehus-med-pavist-covid-19
+      vaccine:
+        enabled: True
+        interval: 5
+        source:
+          name: FHI
+          url: https://www.fhi.no/sv/vaksine/koronavaksinasjonsprogrammet/koronavaksinasjonsstatistikk/
   commands:
     title: "Commands"
     stats: "/stats - COVID-19 statistikk Norge"
@@ -64,3 +70,4 @@ bot:
     confirmed: "/confirmed - Graf over smittede i Norge"
     dead: "/dead - Graf over dødsfall i Norge"
     hospitalized: "/hospitalized - Graf over sykehusinnleggelser i Norge"
+    vaccine: "/vaccine - Graf over antall personer vaksinert i Norge"

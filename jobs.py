@@ -2,7 +2,7 @@ from time import sleep
 from datetime import datetime, date, timedelta
 from telegram import ParseMode
 from modules.utils import load_config, get_messagetext, get_timestr
-from modules.utils import file_open, file_write
+from modules.utils import file_open, file_write, file_open_json, file_write_json
 import modules.rss as rss
 import modules.graphs as graphs
 import modules.c19api as c19api
@@ -210,6 +210,62 @@ def respiratory(context):
         return None
 
 
+def vaccine(context):
+    timestr = get_timestr()
+    source_name = jobs["vaccine"]["source"]["name"]
+    source_url = jobs["vaccine"]["source"]["url"]
+    data = c19api.timeseries("vaccine_doses")
+
+    curr_data = list(filter(lambda x: x["granularity_geo"] == "nation", data))[-1]
+    curr_total_doses = curr_data.get("total_doses")
+
+    last_data = file_open_json("vaccine_doses")
+    last_total_doses = last_data.get("total_doses")
+
+    diff_total_doses = curr_total_doses - last_total_doses
+
+    if diff_total_doses > 0:
+        curr_total_dose_1 = curr_data.get("total_dose_1")
+        curr_total_dose_2 = curr_data.get("total_dose_2")
+
+        last_total_dose_1 = last_data.get("total_dose_1")
+        last_total_dose_2 = last_data.get("total_dose_2")
+
+        diff_total_dose_1 = curr_total_dose_1 - last_total_dose_1
+        diff_total_dose_2 = curr_total_dose_2 - last_total_dose_2
+
+        ret_str = f"{timestr} - <b>Koronavaksinasjon</b> 💉"
+
+        if diff_total_dose_1 != 0:
+            ret_str += (
+                f"\n<b>{diff_total_dose_1:,}</b> nye personer vaksinert med 1. dose"
+            )
+
+        if diff_total_dose_2 != 0:
+            ret_str += f"\n<b>{diff_total_dose_2:,}</b> nye personer fullvaksinert"
+
+        ret_str += (
+            f"\n\n<b>{curr_total_dose_1:,}</b> personer har fått minst én vaksinedose"
+        )
+        ret_str += f"\n<b>{curr_total_dose_2:,}</b> personer er fullvaksinert"
+        ret_str += f"\n\nKilde: <a href='{source_url}'>{source_name}</a>"
+
+        file_write_json("vaccine_doses", curr_data)
+
+        ret_str = ret_str.replace(",", " ")
+        print(ret_str, "\n")
+
+        context.bot.send_photo(
+            bot["autopost"]["chatid"],
+            graphs.vaccine_doses(),
+            parse_mode=ParseMode.HTML,
+            caption=ret_str,
+        )
+
+    else:
+        return None
+
+
 def rss_fhi(context):
     res = rss.fhi()
     if res is not None:
@@ -236,5 +292,3 @@ def graph_all(context):
     context.bot.send_photo(chat_id, graphs.dead())
     sleep(2)
     context.bot.send_photo(chat_id, graphs.hospitalized())
-    sleep(2)
-    context.bot.send_photo(chat_id, graphs.vaccine_doses())

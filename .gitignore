@@ -2,6 +2,7 @@
 config.yml
 *database.sqlite
 *.txt
+*.json
 graphs/
 .vscode/
 lookup/
