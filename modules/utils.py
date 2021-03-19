@@ -25,12 +25,6 @@ def get_messagetext(job, diff):
     return messagetext
 
 
-def get_timestr():
-    timestr = datetime.now().strftime("%H:%M")
-
-    return timestr
-
-
 def wait_seconds(job):
     cfg = load_config()
     interval = cfg["bot"]["autopost"]["jobs"][job]["interval"]

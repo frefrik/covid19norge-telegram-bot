@@ -1,7 +1,7 @@
 from time import sleep
 from datetime import datetime, date, timedelta
 from telegram import ParseMode
-from modules.utils import load_config, get_messagetext, get_timestr
+from modules.utils import load_config, get_messagetext
 from modules.utils import file_open, file_write, file_open_json, file_write_json
 import modules.rss as rss
 import modules.graphs as graphs
@@ -81,7 +81,6 @@ def stats(context):
 
 
 def tested(context):
-    timestr = get_timestr()
     data = c19api.metadata("tested")
     total = data.get("total")
 
@@ -90,14 +89,16 @@ def tested(context):
 
     if tested_diff > 0:
         messagetext = get_messagetext("tested", tested_diff)
-        ret_str = f"{timestr} - 🔬 <b>{tested_diff:,}</b> {messagetext}"
+        ret_str = f"🔬 <b>{tested_diff:,}</b> {messagetext}"
 
         if datetime.now().hour in range(0, 2):
             newYesterday = data.get("newYesterday")
-            ret_str += f"\n{timestr} - Totalt: <b>{total:,}</b> (Nye siste døgn: <b>{newYesterday:,}</b>)"
+            ret_str += (
+                f"\nTotalt: <b>{total:,}</b> (Nye siste døgn: <b>{newYesterday:,}</b>)"
+            )
         else:
             newToday = data.get("newToday")
-            ret_str += f"\n{timestr} - Totalt: <b>{total:,}</b> (Nye i dag: <b>{newToday:,}</b>)"
+            ret_str += f"\nTotalt: <b>{total:,}</b> (Nye i dag: <b>{newToday:,}</b>)"
 
         file_write("tested", total)
 
@@ -112,7 +113,6 @@ def tested(context):
 
 
 def confirmed(context):
-    timestr = get_timestr()
     data = c19api.metadata("confirmed")
     total = data.get("total")
 
@@ -121,14 +121,16 @@ def confirmed(context):
 
     if confirmed_diff > 0:
         messagetext = get_messagetext("confirmed", confirmed_diff)
-        ret_str = f"{timestr} - 🦠 <b>{confirmed_diff}</b> {messagetext}"
+        ret_str = f"🦠 <b>{confirmed_diff}</b> {messagetext}"
 
         if datetime.now().hour in range(0, 2):
             newYesterday = data.get("newYesterday")
-            ret_str += f"\n{timestr} - Totalt: <b>{total:,}</b> (Nye siste døgn: <b>{newYesterday:,}</b>)"
+            ret_str += (
+                f"\nTotalt: <b>{total:,}</b> (Nye siste døgn: <b>{newYesterday:,}</b>)"
+            )
         else:
             newToday = data.get("newToday")
-            ret_str += f"\n{timestr} - Totalt: <b>{total:,}</b> (Nye i dag: <b>{newToday:,}</b>)"
+            ret_str += f"\nTotalt: <b>{total:,}</b> (Nye i dag: <b>{newToday:,}</b>)"
 
         file_write("confirmed", total)
 
@@ -143,7 +145,6 @@ def confirmed(context):
 
 
 def dead(context):
-    timestr = get_timestr()
     data = c19api.metadata("dead")
     total = data.get("total")
 
@@ -152,14 +153,16 @@ def dead(context):
 
     if dead_diff > 0:
         messagetext = get_messagetext("dead", dead_diff)
-        ret_str = f"{timestr} - ❗ <b>{dead_diff}</b> {messagetext}"
+        ret_str = f"❗ <b>{dead_diff}</b> {messagetext}"
 
         if datetime.now().hour in range(0, 2):
             newYesterday = data.get("newYesterday")
-            ret_str += f"\n{timestr} - Totalt: <b>{total:,}</b> (Nye siste døgn: <b>{newYesterday:,}</b>)"
+            ret_str += (
+                f"\nTotalt: <b>{total:,}</b> (Nye siste døgn: <b>{newYesterday:,}</b>)"
+            )
         else:
             newToday = data.get("newToday")
-            ret_str += f"\n{timestr} - Totalt: <b>{total:,}</b> (Nye i dag: <b>{newToday:,}</b>)"
+            ret_str += f"\nTotalt: <b>{total:,}</b> (Nye i dag: <b>{newToday:,}</b>)"
 
         file_write("dead", total)
 
@@ -174,7 +177,6 @@ def dead(context):
 
 
 def admissions(context):
-    timestr = get_timestr()
     total = c19api.metadata("admissions", "total")
 
     last_data = file_open("admissions")
@@ -186,8 +188,8 @@ def admissions(context):
         else:
             messagetext = "personer er innlagt på sykehus"
 
-        ret_str = f"{timestr} - 🏥 Endring i antall innlagte: <b>{diff:+}</b>"
-        ret_str += f"\n{timestr} - <b>{total:,}</b> {messagetext}"
+        ret_str = f"🏥 Endring i antall innlagte: <b>{diff:+}</b>"
+        ret_str += f"\n<b>{total:,}</b> {messagetext}"
 
         file_write("admissions", total)
 
@@ -202,7 +204,6 @@ def admissions(context):
 
 
 def respiratory(context):
-    timestr = get_timestr()
     total = c19api.metadata("respiratory", "total")
 
     last_data = file_open("respiratory")
@@ -214,8 +215,8 @@ def respiratory(context):
         else:
             messagetext = "personer er på respirator"
 
-        ret_str = f"{timestr} - 😷 Endring i antall på respirator: <b>{diff:+}</b>"
-        ret_str += f"\n{timestr} - <b>{total:,}</b> {messagetext}"
+        ret_str = f"😷 Endring i antall på respirator: <b>{diff:+}</b>"
+        ret_str += f"\n<b>{total:,}</b> {messagetext}"
 
         file_write("respiratory", total)
 
@@ -230,7 +231,6 @@ def respiratory(context):
 
 
 def vaccine(context):
-    timestr = get_timestr()
     source_name = jobs["vaccine"]["source"]["name"]
     source_url = jobs["vaccine"]["source"]["url"]
     data = c19api.timeseries("vaccine_doses")
@@ -253,7 +253,7 @@ def vaccine(context):
         diff_total_dose_1 = curr_total_dose_1 - last_total_dose_1
         diff_total_dose_2 = curr_total_dose_2 - last_total_dose_2
 
-        ret_str = f"{timestr} - <b>Koronavaksinasjon</b> 💉"
+        ret_str = "💉 <b>Antall vaksinerte</b>"
 
         if diff_total_dose_1 != 0:
             ret_str += (
