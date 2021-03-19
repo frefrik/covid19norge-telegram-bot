@@ -37,26 +37,6 @@ bot:
         source:
           name: FHI
           url: https://www.fhi.no/sv/smittsomme-sykdommer/corona/dags--og-ukerapporter/dags--og-ukerapporter-om-koronavirus/
-      admissions:
-        enabled: True
-        interval: 5
-        text_pos_singular: person mer på sykehus
-        text_pos_plural: flere personer på sykehus
-        text_neg_singular: person mindre på sykehus
-        text_neg_plural: personer færre på sykehus
-        source:
-          name: Helsedirektoratet
-          url: https://www.helsedirektoratet.no/statistikk/antall-innlagte-pasienter-pa-sykehus-med-pavist-covid-19
-      respiratory:
-        enabled: True
-        interval: 5
-        text_pos_singular: person mer på respirator
-        text_pos_plural: flere personer respirator
-        text_neg_singular: person mindre på respirator
-        text_neg_plural: personer færre på respirator
-        source:
-          name: Helsedirektoratet
-          url: https://www.helsedirektoratet.no/statistikk/antall-innlagte-pasienter-pa-sykehus-med-pavist-covid-19
       hospitalized:
         enabled: True
         interval: 5

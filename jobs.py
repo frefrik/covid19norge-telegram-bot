@@ -176,60 +176,6 @@ def dead(context):
         return None
 
 
-def admissions(context):
-    total = c19api.metadata("admissions", "total")
-
-    last_data = file_open("admissions")
-    diff = total - int(last_data)
-
-    if diff != 0:
-        if total == 1:
-            messagetext = "person er innlagt på sykehus"
-        else:
-            messagetext = "personer er innlagt på sykehus"
-
-        ret_str = f"🏥 Endring i antall innlagte: <b>{diff:+}</b>"
-        ret_str += f"\n<b>{total:,}</b> {messagetext}"
-
-        file_write("admissions", total)
-
-        ret_str = ret_str.replace(",", " ")
-        print(ret_str, "\n")
-
-        context.bot.send_message(
-            chat_id=bot["autopost"]["chatid"], text=ret_str, parse_mode=ParseMode.HTML
-        )
-    else:
-        return None
-
-
-def respiratory(context):
-    total = c19api.metadata("respiratory", "total")
-
-    last_data = file_open("respiratory")
-    diff = total - int(last_data)
-
-    if diff != 0:
-        if total == 1:
-            messagetext = "person er på respirator"
-        else:
-            messagetext = "personer er på respirator"
-
-        ret_str = f"😷 Endring i antall på respirator: <b>{diff:+}</b>"
-        ret_str += f"\n<b>{total:,}</b> {messagetext}"
-
-        file_write("respiratory", total)
-
-        ret_str = ret_str.replace(",", " ")
-        print(ret_str, "\n")
-
-        context.bot.send_message(
-            chat_id=bot["autopost"]["chatid"], text=ret_str, parse_mode=ParseMode.HTML
-        )
-    else:
-        return None
-
-
 def hospitalized(context):
     source_name = jobs["hospitalized"]["source"]["name"]
     source_url = jobs["hospitalized"]["source"]["url"]
