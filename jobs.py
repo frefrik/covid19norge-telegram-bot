@@ -230,6 +230,52 @@ def respiratory(context):
         return None
 
 
+def hospitalized(context):
+    source_name = jobs["hospitalized"]["source"]["name"]
+    source_url = jobs["hospitalized"]["source"]["url"]
+
+    curr_data = c19api.timeseries("hospitalized")[-1]
+    curr_respiratory = int(curr_data.get("respiratory"))
+    curr_admissions = int(curr_data.get("admissions"))
+
+    last_data = file_open_json("hospitalized")
+    last_respiratory = int(last_data.get("respiratory"))
+    last_admissions = int(last_data.get("admissions"))
+
+    if curr_admissions != last_admissions or curr_respiratory != last_respiratory:
+        diff_admissions = curr_admissions - last_admissions
+        diff_respiratory = curr_respiratory - last_respiratory
+        respiratory_pct = curr_respiratory / curr_admissions
+
+        ret_str = "🏥 <b>Innlagte pasienter på sykehus</b>"
+
+        if diff_admissions != 0:
+            ret_str += f"\nEndring i antall innlagte: <b>{diff_admissions:+,}</b>"
+
+        if diff_respiratory != 0:
+            ret_str += f"\nEndring i antall på respirator: <b>{diff_respiratory:+,}</b>"
+
+        ret_str += f"\n\n<b>{curr_admissions:,}</b> personer er innlagt på sykehus"
+        ret_str += f"\n<b>{curr_respiratory:,}</b> personer er på respirator ({respiratory_pct:.01%})"
+
+        ret_str += f"\n\nKilde: <a href='{source_url}'>{source_name}</a>"
+
+        ret_str = ret_str.replace(",", " ")
+
+        print(ret_str, "\n")
+        file_write_json("hospitalized", curr_data)
+
+        context.bot.send_photo(
+            bot["autopost"]["chatid"],
+            graphs.hospitalized(),
+            parse_mode=ParseMode.HTML,
+            caption=ret_str,
+        )
+
+    else:
+        return None
+
+
 def vaccine(context):
     source_name = jobs["vaccine"]["source"]["name"]
     source_url = jobs["vaccine"]["source"]["url"]
@@ -309,5 +355,3 @@ def graph_all(context):
     context.bot.send_photo(chat_id, graphs.confirmed())
     sleep(2)
     context.bot.send_photo(chat_id, graphs.dead())
-    sleep(2)
-    context.bot.send_photo(chat_id, graphs.hospitalized())

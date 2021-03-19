@@ -57,6 +57,12 @@ bot:
         source:
           name: Helsedirektoratet
           url: https://www.helsedirektoratet.no/statistikk/antall-innlagte-pasienter-pa-sykehus-med-pavist-covid-19
+      hospitalized:
+        enabled: True
+        interval: 5
+        source:
+          name: Helsedirektoratet
+          url: https://www.helsedirektoratet.no/statistikk/antall-innlagte-pasienter-pa-sykehus-med-pavist-covid-19
       vaccine:
         enabled: True
         interval: 5

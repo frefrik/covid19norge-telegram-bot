@@ -250,14 +250,14 @@ def dead():
 
 def hospitalized():
     data = c19api.timeseries("hospitalized")
-    yesterday = date.today() - timedelta(days=1)
+    today = date.today()
     filename = "./graphs/no_hospitalized.png"
     if os.path.exists(filename):
         os.remove(filename)
 
     df = pd.DataFrame(data)
 
-    idx = pd.date_range("2020-03-08", yesterday)
+    idx = pd.date_range("2020-03-08", today)
     df.index = pd.DatetimeIndex(df["date"])
     df = df.reindex(idx)
     df["date"] = df.index
