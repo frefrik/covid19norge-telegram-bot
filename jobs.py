@@ -145,32 +145,39 @@ def confirmed(context):
 
 
 def dead(context):
-    data = c19api.metadata("dead")
-    total = data.get("total")
+    source_name = jobs["dead"]["source"]["name"]
+    source_url = jobs["dead"]["source"]["url"]
 
-    last_data = file_open("dead")
-    dead_diff = total - int(last_data)
+    curr_data = c19api.timeseries("dead")[-1]
+    curr_total = curr_data.get("total")
 
-    if dead_diff > 0:
-        messagetext = get_messagetext("dead", dead_diff)
-        ret_str = f"❗ <b>{dead_diff}</b> {messagetext}"
+    last_data = file_open_json("dead")
+    last_total = last_data.get("total")
 
-        if datetime.now().hour in range(0, 2):
-            newYesterday = data.get("newYesterday")
-            ret_str += (
-                f"\nTotalt: <b>{total:,}</b> (Nye siste døgn: <b>{newYesterday:,}</b>)"
-            )
-        else:
-            newToday = data.get("newToday")
-            ret_str += f"\nTotalt: <b>{total:,}</b> (Nye i dag: <b>{newToday:,}</b>)"
+    diff_dead = curr_total - last_total
 
-        file_write("dead", total)
+    if diff_dead > 0:
+        messagetext = get_messagetext("dead", diff_dead)
+        curr_new_today = curr_data.get("new")
+
+        ret_str = "❗ <b>COVID-19 assosierte dødsfall</b>"
+        ret_str += f"\n<b>{diff_dead}</b> {messagetext}"
+
+        ret_str += (
+            f"\nTotalt: <b>{curr_total:,}</b> (Nye i dag: <b>{curr_new_today:,}</b>)"
+        )
+        ret_str += f"\n\nKilde: <a href='{source_url}'>{source_name}</a>"
+
+        file_write_json("dead", curr_data)
 
         ret_str = ret_str.replace(",", " ")
         print(ret_str, "\n")
 
-        context.bot.send_message(
-            chat_id=bot["autopost"]["chatid"], text=ret_str, parse_mode=ParseMode.HTML
+        context.bot.send_photo(
+            bot["autopost"]["chatid"],
+            graphs.dead(),
+            parse_mode=ParseMode.HTML,
+            caption=ret_str,
         )
     else:
         return None
@@ -299,5 +306,3 @@ def graph_all(context):
     context.bot.send_photo(chat_id, graphs.tested())
     sleep(2)
     context.bot.send_photo(chat_id, graphs.confirmed())
-    sleep(2)
-    context.bot.send_photo(chat_id, graphs.dead())

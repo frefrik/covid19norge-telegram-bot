@@ -32,8 +32,6 @@ bot:
         interval: 5
         text_pos_singular: nytt dødsfall registrert
         text_pos_plural: nye dødsfall registrert
-        text_neg_singular:
-        text_neg_plural:
         source:
           name: FHI
           url: https://www.fhi.no/sv/smittsomme-sykdommer/corona/dags--og-ukerapporter/dags--og-ukerapporter-om-koronavirus/
