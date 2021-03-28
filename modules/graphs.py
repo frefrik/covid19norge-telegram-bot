@@ -460,6 +460,96 @@ def smittestopp_reported():
     return open(filename, "rb")
 
 
+def smittestopp():
+    data = c19api.timeseries("smittestopp")
+
+    filename = "./graphs/no_smittestopp.png"
+    if os.path.exists(filename):
+        os.remove(filename)
+
+    df = pd.DataFrame(data)
+    df["date"] = pd.to_datetime(df["date"])
+
+    df = df.melt(
+        id_vars=["date"],
+        value_vars=["new_reported", "total_downloads"],
+        var_name="category",
+        value_name="value",
+    ).dropna()
+
+    rename = {
+        "new_reported": "Antall meldt smittet i Smittestopp",
+        "total_downloads": "Antall nedlastinger av Smittestopp",
+    }
+
+    df["category"] = df["category"].replace(rename)
+
+    base = alt.Chart(
+        df,
+        title="Antall nedlastinger av Smittestopp og antall som har meldt gjennom appen at de er smittet (Kilde: FHI)",
+    ).encode(alt.X("yearmonthdate(date):O", axis=alt.Axis(title=None, labelAngle=-40)))
+
+    downloads = (
+        base.transform_filter(
+            alt.datum.category == "Antall nedlastinger av Smittestopp"
+        )
+        .mark_area(line={}, color="#5BC1FF", opacity=0.2)
+        .encode(
+            y=alt.Y(
+                "value:Q",
+                axis=alt.Axis(title="Antall nedlastinger av Smittestopp", grid=True),
+            )
+        )
+    )
+
+    reported = (
+        base.transform_filter(
+            alt.datum.category == "Antall meldt smittet i Smittestopp"
+        )
+        .mark_bar(color="#FFA57E")
+        .encode(
+            y=alt.Y(
+                "value:Q", axis=alt.Axis(title="Antall meldt smittet i Smittestopp")
+            ),
+            color=alt.Color(
+                "category:N",
+                scale=alt.Scale(
+                    domain=[
+                        "Antall nedlastinger av Smittestopp",
+                        "Antall meldt smittet i Smittestopp",
+                    ],
+                    range=["#5BC1FF", "#FFA57E"],
+                ),
+                legend=alt.Legend(title=None),
+            ),
+        )
+    )
+
+    chart = (
+        alt.layer(reported, downloads)
+        .resolve_scale(y="independent")
+        .properties(width=1200, height=600)
+        .configure_legend(
+            strokeColor="gray",
+            fillColor="#FFFFFF",
+            labelFontSize=12,
+            symbolStrokeWidth=2,
+            symbolSize=160,
+            labelLimit=200,
+            padding=6,
+            cornerRadius=5,
+            direction="horizontal",
+            orient="none",
+            legendX=390,
+            legendY=660,
+        )
+    )
+
+    save(chart, filename)
+
+    return open(filename, "rb")
+
+
 def vaccine_doses():
     data = c19api.timeseries("vaccine_doses")
 
