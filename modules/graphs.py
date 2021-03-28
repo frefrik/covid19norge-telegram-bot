@@ -1,5 +1,5 @@
 import os
-from datetime import date, timedelta
+from datetime import date
 from altair_saver import save
 import altair as alt
 import pandas as pd
