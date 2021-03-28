@@ -122,7 +122,7 @@ def smittestopp_graph(update, context):
         if context.args[0] == "reported":
             graph = graphs.smittestopp_reported()
     except IndexError:
-        graph = None
+        graph = graphs.smittestopp()
 
     if graph:
         context.bot.send_photo(chat_id=update.message.chat_id, photo=graph)
