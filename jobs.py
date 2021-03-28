@@ -284,6 +284,63 @@ def vaccine(context):
         return None
 
 
+def smittestopp(context):
+    source_name = jobs["smittestopp"]["source"]["name"]
+    source_url = jobs["smittestopp"]["source"]["url"]
+
+    curr_data = c19api.timeseries("smittestopp")[-1]
+    curr_total_downloads = int(curr_data.get("total_downloads"))
+    curr_total_reported = int(curr_data.get("total_reported"))
+
+    last_data = file_open_json("smittestopp")
+    last_total_downloads = int(last_data.get("total_downloads"))
+    last_total_reported = int(last_data.get("total_reported"))
+
+    if (
+        curr_total_downloads != last_total_downloads
+        or curr_total_reported != last_total_reported
+    ):
+        new_downloads = int(curr_data.get("new_downloads"))
+        new_reported = int(curr_data.get("new_reported"))
+
+        if new_downloads == 1:
+            new_downloads_text = "ny person lastet ned Smittestopp"
+        else:
+            new_downloads_text = "nye personer lastet ned Smittestopp"
+
+        if new_reported == 1:
+            new_reported_text = "ny person meldt smittet i Smittestopp"
+        else:
+            new_reported_text = "nye personer meldt smittet i Smittestopp"
+
+        ret_str = "📱 <b>Smittestopp</b>"
+
+        if new_downloads != 0:
+            ret_str += f"\n<b>{new_downloads:,}</b> {new_downloads_text}"
+
+        if new_reported != 0:
+            ret_str += f"\n<b>{new_reported:,}</b> {new_reported_text}"
+
+        ret_str += f"\n\nTotalt <b>{curr_total_downloads:,}</b> personer har lastet ned Smittestopp"
+        ret_str += f"\nTotalt <b>{curr_total_reported:,}</b> personer meldt smittet i Smittestopp"
+        ret_str += f"\n\nKilde: <a href='{source_url}'>{source_name}</a>"
+
+        file_write_json("smittestopp", curr_data)
+
+        ret_str = ret_str.replace(",", " ")
+        print(ret_str, "\n")
+
+        context.bot.send_photo(
+            bot["autopost"]["chatid"],
+            graphs.smittestopp(),
+            parse_mode=ParseMode.HTML,
+            caption=ret_str,
+        )
+
+    else:
+        return None
+
+
 def rss_fhi(context):
     res = rss.fhi()
     if res is not None:
