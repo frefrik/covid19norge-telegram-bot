@@ -164,7 +164,7 @@ def confirmed():
 def dead():
     data = c19api.timeseries("dead")
 
-    yesterday = date.today() - timedelta(days=1)
+    today = date.today()
     filename = "./graphs/no_dead.png"
     if os.path.exists(filename):
         os.remove(filename)
@@ -176,7 +176,7 @@ def dead():
     df = df.reindex(idx)
     df["date"] = df.index
     df = df.reset_index(drop=True)
-    df = df[df.date <= str(yesterday)]
+    df = df[df.date <= str(today)]
 
     df["new"] = df["new"].fillna(0).astype(int)
     df["total"] = df["total"].fillna(method="bfill").astype(int)
