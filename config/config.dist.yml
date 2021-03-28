@@ -47,6 +47,12 @@ bot:
         source:
           name: FHI
           url: https://www.fhi.no/sv/vaksine/koronavaksinasjonsprogrammet/koronavaksinasjonsstatistikk/
+      smittestopp:
+        enabled: True
+        interval: 5
+        source:
+          name: FHI
+          url: https://www.fhi.no/om/smittestopp/nokkeltall-fra-smittestopp/
   commands:
     title: "Commands"
     stats: "/stats - COVID-19 statistikk Norge"
@@ -55,3 +61,4 @@ bot:
     dead: "/dead - Graf over dødsfall i Norge"
     hospitalized: "/hospitalized - Graf over sykehusinnleggelser i Norge"
     vaccine: "/vaccine - Graf over antall personer vaksinert i Norge"
+    smittestopp: "/smittestopp - Graf over data fra Smittestopp"
