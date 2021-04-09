@@ -72,7 +72,7 @@ def tested():
             direction="horizontal",
             orient="none",
             legendX=480,
-            legendY=650,
+            legendY=660,
         )
     )
 
@@ -152,7 +152,7 @@ def confirmed():
             direction="horizontal",
             orient="none",
             legendX=480,
-            legendY=650,
+            legendY=660,
         )
     )
 
@@ -239,7 +239,7 @@ def dead():
             direction="horizontal",
             orient="none",
             legendX=480,
-            legendY=650,
+            legendY=660,
         )
     )
 
@@ -303,7 +303,7 @@ def hospitalized():
             direction="horizontal",
             orient="none",
             legendX=480,
-            legendY=650,
+            legendY=660,
         )
     )
 
@@ -377,7 +377,7 @@ def smittestopp_downloads():
             direction="horizontal",
             orient="none",
             legendX=480,
-            legendY=650,
+            legendY=660,
         )
     )
 
@@ -451,7 +451,7 @@ def smittestopp_reported():
             direction="horizontal",
             orient="none",
             legendX=480,
-            legendY=650,
+            legendY=660,
         )
     )
 
