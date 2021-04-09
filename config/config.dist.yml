@@ -33,6 +33,12 @@ bot:
         source:
           name: MSIS
           url: https://statistikk.fhi.no/msis
+      confirmed_by_testdate:
+        source:
+          name: FHI
+          url: https://www.fhi.no/sv/smittsomme-sykdommer/corona/dags--og-ukerapporter/dags--og-ukerapporter-om-koronavirus/
+        enabled: True
+        interval: 5
       dead:
         enabled: True
         interval: 5
