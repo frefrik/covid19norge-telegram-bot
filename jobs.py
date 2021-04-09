@@ -230,6 +230,7 @@ def hospitalized(context):
 
 
 def vaccine(context):
+    population = 5391369
     source_name = jobs["vaccine"]["source"]["name"]
     source_url = jobs["vaccine"]["source"]["url"]
     data = c19api.timeseries("vaccine_doses")
@@ -245,6 +246,8 @@ def vaccine(context):
     if diff_total_doses > 0:
         curr_total_dose_1 = curr_data.get("total_dose_1")
         curr_total_dose_2 = curr_data.get("total_dose_2")
+        curr_total_dose_1_pct = curr_total_dose_1 / population
+        curr_total_dose_2_pct = curr_total_dose_2 / population
 
         last_total_dose_1 = last_data.get("total_dose_1")
         last_total_dose_2 = last_data.get("total_dose_2")
@@ -262,10 +265,8 @@ def vaccine(context):
         if diff_total_dose_2 != 0:
             ret_str += f"\n<b>{diff_total_dose_2:,}</b> nye personer fullvaksinert"
 
-        ret_str += (
-            f"\n\n<b>{curr_total_dose_1:,}</b> personer har fått minst én vaksinedose"
-        )
-        ret_str += f"\n<b>{curr_total_dose_2:,}</b> personer er fullvaksinert"
+        ret_str += f"\n\nTotalt <b>{curr_total_dose_1:,}</b> personer (<b>{curr_total_dose_1_pct:,.02%}</b> av befolkningen) har fått minst én vaksinedose"
+        ret_str += f"\nTotalt <b>{curr_total_dose_2:,}</b> personer (<b>{curr_total_dose_2_pct:,.02%}</b> av befolkningen) er fullvaksinert"
         ret_str += f"\n\nKilde: <a href='{source_url}'>{source_name}</a>"
 
         file_write_json("vaccine_doses", curr_data)
