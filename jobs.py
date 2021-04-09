@@ -418,11 +418,3 @@ def rss_regjeringen(context):
         context.bot.send_message(
             chat_id=bot["autopost"]["chatid"], text=res, parse_mode=ParseMode.HTML
         )
-
-
-def graph_all(context):
-    chat_id = bot["autopost"]["chatid"]
-
-    context.bot.send_photo(chat_id, graphs.tested())
-    sleep(2)
-    context.bot.send_photo(chat_id, graphs.confirmed())
