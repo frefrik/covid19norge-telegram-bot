@@ -112,6 +112,36 @@ def tested(context):
         return None
 
 
+def tested_lab(context):
+    source_name = jobs["tested_lab"]["source"]["name"]
+    source_url = jobs["tested_lab"]["source"]["url"]
+
+    curr_data = c19api.timeseries("tested_lab")[-1]
+    curr_total = curr_data.get("total")
+
+    last_data = file_open_json("tested_lab")
+    last_total = last_data.get("total")
+
+    if curr_total - last_total > 0:
+        ret_str = "🔬 <b>Antall testet (Laboratoriedata)</b>"
+        ret_str += "\nAntall personer testet og andelen positive blant disse i Norge siden epidemiens start."
+        ret_str += "\nEn ny test på en person defineres som en test utført minst 7 dager etter forrige test av samme person."
+        ret_str += f"\n\nKilde: <a href='{source_url}'>{source_name}</a>"
+
+        file_write_json("tested_lab", curr_data)
+
+        print(ret_str, "\n")
+
+        context.bot.send_photo(
+            bot["autopost"]["chatid"],
+            graphs.tested(),
+            parse_mode=ParseMode.HTML,
+            caption=ret_str,
+        )
+    else:
+        return None
+
+
 def confirmed(context):
     data = c19api.metadata("confirmed")
     total = data.get("total")
