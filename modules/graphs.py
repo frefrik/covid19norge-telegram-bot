@@ -593,7 +593,7 @@ def vaccine_doses():
                 "category:N",
                 scale=alt.Scale(
                     domain=["Har fått minst én dose", "Fullvaksinert"],
-                    range=["#5dade2", " #2ecc71"],
+                    range=["#5dade2", "#2ecc71"],
                 ),
                 legend=alt.Legend(title=None),
             ),
