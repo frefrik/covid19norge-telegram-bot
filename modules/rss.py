@@ -1,104 +1,43 @@
+import re
 import feedparser
-from sqlitedict import SqliteDict
-
-db = SqliteDict("./data/rss_database.sqlite", "rss", autocommit=True)
-
-regjeringen_key_words = ["pressekonferanse"]
-
-key_words = [
-    "korona",
-    "intensiv",
-    "covid",
-    "smitte",
-    "app",
-    "rød",
-    "grøn",
-    "hurtigrut",
-    "utbrudd",
-    "karantene",
-    "reiser",
-    "AstraZeneca",
-    "Moderna",
-    "Comirnaty",
-    "BioNTech",
-    "Pfizer",
-]
+from modules.utils import file_open_json, file_write_json
 
 
-def select_all():
-    for i in db.items():
-        print(i)
-
-
-def contains_wanted(in_str):
+def contains_wanted(in_str, key_words):
     for key_word in key_words:
         if key_word.lower() in in_str:
             return True
-
     return False
 
 
-def regjeringen_contains_wanted(in_str):
-    for key_word in regjeringen_key_words:
-        if key_word.lower() in in_str:
-            return True
+def fetch_feed():
+    rssfile = file_open_json("rss")
 
-    return False
+    for i in rssfile:
+        feed_url = rssfile[i]["feed_url"]
+        keywords = rssfile[i]["keywords"]
+        seen_urls = rssfile[i]["seen_urls"]
 
+        feed = feedparser.parse(feed_url)
 
-def fhi():
-    feed_url = "https://fhi.no/rss/nyheter/"
-    feed = feedparser.parse(feed_url)
+        for post in feed.entries:
+            title = post.title
+            url = post.link
+            try:
+                content = post.description
+                content = re.sub("<[^>]*>", "", content)
+            except Exception:
+                content = None
 
-    for post in feed.entries:
-        title = post.title
-        url = post.link
-        try:
-            content = post.description
-        except Exception:
-            content = None
+            if url not in seen_urls:
+                if contains_wanted(title.lower(), keywords):
+                    ret_str = f"\n<b>{title}</b>"
+                    if content:
+                        ret_str += f"\n{content}"
+                    ret_str += f"\n\n{url}"
+                    print(ret_str)
 
-        if post.link in db:
-            break
+                    seen_urls.append(url)
+                    file_write_json("rss", rssfile)
 
-        if contains_wanted(title.lower()):
-            ret_str = f"\n<b>{title}</b>"
-            if content:
-                ret_str += f"\n{content}"
-            ret_str += f"\n\n{url}"
-
-            db[post.link] = True
-
-        else:
-            return None
-
-        return ret_str
-
-
-def regjeringen():
-    feed_url = "https://www.regjeringen.no/no/rss/Rss/2581966/?topic=2692388&documentType=aktuelt/nyheter"
-    feed = feedparser.parse(feed_url)
-
-    for post in feed.entries:
-        title = post.title
-        url = post.link.split("?utm_source")[0]
-        try:
-            content = post.description
-        except Exception:
-            content = None
-
-        if url in db:
-            break
-
-        if regjeringen_contains_wanted(title.lower()):
-            ret_str = f"\n<b>{title}</b>"
-            if content:
-                ret_str += f"\n{content}"
-            ret_str += f"\n\n{url}"
-
-            db[url] = True
-
-        else:
-            return None
-
-        return ret_str
+                    return ret_str

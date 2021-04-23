@@ -1,12 +1,10 @@
 bot:
   token: BOT_TOKEN
+  chatid_dev: DEVELOPER_CHAT_ID
   autopost:
     chatid: CHAT_ID
     jobs:
-      rss_fhi:
-        enabled: True
-        interval: 5
-      rss_regjeringen:
+      rss_feed:
         enabled: True
         interval: 5
       tested:

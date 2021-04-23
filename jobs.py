@@ -1,4 +1,3 @@
-from time import sleep
 from datetime import datetime, date, timedelta
 from telegram import ParseMode
 from modules.utils import load_config, get_messagetext
@@ -404,16 +403,9 @@ def smittestopp(context):
         return None
 
 
-def rss_fhi(context):
-    res = rss.fhi()
-    if res is not None:
-        context.bot.send_message(
-            chat_id=bot["autopost"]["chatid"], text=res, parse_mode=ParseMode.HTML
-        )
+def rss_feed(context):
+    res = rss.fetch_feed()
 
-
-def rss_regjeringen(context):
-    res = rss.regjeringen()
     if res is not None:
         context.bot.send_message(
             chat_id=bot["autopost"]["chatid"], text=res, parse_mode=ParseMode.HTML
