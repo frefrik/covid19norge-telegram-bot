@@ -82,7 +82,7 @@ services:
   bot:
     container_name: covid19norge-telegram-bot
     image: frefrik/covid19norge-telegram-bot
-    restart: always
+    restart: unless-stopped
     environment:
       - TZ=Europe/Oslo
     volumes:
