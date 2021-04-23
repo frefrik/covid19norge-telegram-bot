@@ -100,5 +100,5 @@ def file_open_json(category):
 
 
 def file_write_json(category, data):
-    with open(f"data/{category}.json", "w") as json_file:
-        json.dump(data, json_file)
+    with open(f"data/{category}.json", "w", encoding="utf8") as json_file:
+        json.dump(data, json_file, indent=2, ensure_ascii=False)
