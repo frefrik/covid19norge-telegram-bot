@@ -1,6 +1,6 @@
 altair==4.1.0
 altair-saver==0.5.0
-feedparser==6.0.6
+feedparser==6.0.7
 python-telegram-bot==13.6
 PyYAML==5.4.1
 requests==2.25.1
