@@ -1,6 +1,6 @@
 import requests
 
-API_URL = "https://c19norge.no/api/v1"
+API_URL = "https://covid19norge.no/api/v1"
 
 
 def metadata(category, subcategory=None):

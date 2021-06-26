@@ -153,4 +153,4 @@ $ screen -r covid19norge
 ```
 
 ## Datasource
-- [github.com/frefrik/c19norge-data](https://github.com/frefrik/c19norge-data) accessed through [c19norge.no/api](https://c19norge.no/api)
+- [github.com/frefrik/covid19norge-data](https://github.com/frefrik/covid19norge-data) accessed through [covid19norge.no/api](https://covid19norge.no/api)
