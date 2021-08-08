@@ -80,26 +80,28 @@ def stats(context):
 
 
 def tested(context):
-    data = c19api.metadata("tested")
-    total = data.get("total")
+    source_name = jobs["tested"]["source"]["name"]
+    source_url = jobs["tested"]["source"]["url"]
 
-    last_data = file_open("tested")
-    tested_diff = total - int(last_data)
+    curr_data = c19api.timeseries("tested")[-1]
+    curr_total = curr_data.get("total")
 
-    if tested_diff > 0:
-        messagetext = get_messagetext("tested", tested_diff)
-        ret_str = f"🔬 <b>{tested_diff:,}</b> {messagetext}"
+    last_data = file_open_json("tested")
+    last_total = last_data.get("total")
 
-        if datetime.now().hour in range(0, 2):
-            newYesterday = data.get("newYesterday")
-            ret_str += (
-                f"\nTotalt: <b>{total:,}</b> (Nye siste døgn: <b>{newYesterday:,}</b>)"
-            )
-        else:
-            newToday = data.get("newToday")
-            ret_str += f"\nTotalt: <b>{total:,}</b> (Nye i dag: <b>{newToday:,}</b>)"
+    diff_tested = curr_total - last_total
 
-        file_write("tested", total)
+    if diff_tested > 0:
+        messagetext = get_messagetext("tested", diff_tested)
+        curr_new_today = curr_data.get("new")
+
+        ret_str = f"🔬 <b>{diff_tested:,}</b> {messagetext}"
+        ret_str += (
+            f"\nTotalt: <b>{last_total:,}</b> (Nye i dag: <b>{curr_new_today:,}</b>)"
+        )
+        ret_str += f"\n\nKilde: <a href='{source_url}'>{source_name}</a>"
+
+        file_write_json("tested", curr_data)
 
         ret_str = ret_str.replace(",", " ")
         print(ret_str, "\n")
@@ -142,26 +144,34 @@ def tested_lab(context):
 
 
 def confirmed(context):
-    data = c19api.metadata("confirmed")
-    total = data.get("total")
+    source_name = jobs["confirmed"]["source"]["name"]
+    source_url = jobs["confirmed"]["source"]["url"]
 
-    last_data = file_open("confirmed")
-    confirmed_diff = total - int(last_data)
+    curr_data = c19api.timeseries("confirmed")[-1]
+    curr_total = curr_data.get("total")
 
-    if confirmed_diff > 0:
-        messagetext = get_messagetext("confirmed", confirmed_diff)
-        ret_str = f"🦠 <b>{confirmed_diff}</b> {messagetext}"
+    last_data = file_open_json("confirmed")
+    last_total = last_data.get("total")
+
+    diff_confirmed = curr_total - last_total
+
+    if diff_confirmed > 0:
+        messagetext = get_messagetext("confirmed", diff_confirmed)
+        ret_str = f"🦠 <b>{diff_confirmed}</b> {messagetext}"
 
         if datetime.now().hour in range(0, 2):
-            newYesterday = data.get("newYesterday")
-            ret_str += (
-                f"\nTotalt: <b>{total:,}</b> (Nye siste døgn: <b>{newYesterday:,}</b>)"
-            )
+            yesterday_data = c19api.timeseries("confirmed")[-2]
+            yesterday_new = yesterday_data.get("new")
+            ret_str += f"\nTotalt: <b>{last_total:,}</b> (Nye siste døgn: <b>{yesterday_new:,}</b>)"
         else:
-            newToday = data.get("newToday")
-            ret_str += f"\nTotalt: <b>{total:,}</b> (Nye i dag: <b>{newToday:,}</b>)"
+            newToday = curr_data.get("new")
+            ret_str += (
+                f"\nTotalt: <b>{curr_total:,}</b> (Nye i dag: <b>{newToday:,}</b>)"
+            )
 
-        file_write("confirmed", total)
+        ret_str += f"\n\nKilde: <a href='{source_url}'>{source_name}</a>"
+
+        file_write_json("confirmed", curr_data)
 
         ret_str = ret_str.replace(",", " ")
         print(ret_str, "\n")
