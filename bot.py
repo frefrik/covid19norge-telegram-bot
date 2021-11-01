@@ -89,7 +89,7 @@ def main():
             print("Error initiating job:", job)
             raise
 
-    jq.run_daily(jobs.stats, time(hour=22, minute=30))
+    jq.run_daily(jobs.stats, time(hour=23, minute=30))
 
     dp.add_error_handler(error_handler)
     updater.start_polling()
