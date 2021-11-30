@@ -65,8 +65,10 @@ def stats(update, context):
     )[-1]
     vacc_total_dose_1 = vaccine_data.get("total_dose_1")
     vacc_total_dose_2 = vaccine_data.get("total_dose_2")
+    vacc_total_dose_3 = vaccine_data.get("total_dose_3")
     vacc_total_dose_1_pct = vacc_total_dose_1 / population
     vacc_total_dose_2_pct = vacc_total_dose_2 / population
+    vacc_total_dose_3_pct = vacc_total_dose_3 / population
 
     ret_str = f"🔢 <b>Nøkkeltall - {today}</b>"
 
@@ -86,7 +88,8 @@ def stats(update, context):
 
     ret_str += "\n\n💉 Andel av befolkningen vaksinert"
     ret_str += f"\n<b>{vacc_total_dose_1_pct:,.02%}</b> har fått minst én dose (<b>{vacc_total_dose_1:,}</b> personer)"
-    ret_str += f"\n<b>{vacc_total_dose_2_pct:,.02%}</b> er fullvaksinert (<b>{vacc_total_dose_2:,}</b> personer)"
+    ret_str += f"\n<b>{vacc_total_dose_2_pct:,.02%}</b> er fullvaksinert med to doser (<b>{vacc_total_dose_2:,}</b> personer)"
+    ret_str += f"\n<b>{vacc_total_dose_3_pct:,.02%}</b> har fått tre vaksinedoser (<b>{vacc_total_dose_3:,}</b> personer)"
 
     ret_str = ret_str.replace(",", " ")
 

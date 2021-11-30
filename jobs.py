@@ -1,7 +1,7 @@
 from datetime import datetime, date, timedelta
 from telegram import ParseMode
 from modules.utils import load_config, get_messagetext
-from modules.utils import file_open, file_write, file_open_json, file_write_json
+from modules.utils import file_open_json, file_write_json
 import modules.rss as rss
 import modules.graphs as graphs
 import modules.c19api as c19api
@@ -49,8 +49,10 @@ def stats(context):
     )[-1]
     vacc_total_dose_1 = vaccine_data.get("total_dose_1")
     vacc_total_dose_2 = vaccine_data.get("total_dose_2")
+    vacc_total_dose_3 = vaccine_data.get("total_dose_3")
     vacc_total_dose_1_pct = vacc_total_dose_1 / population
     vacc_total_dose_2_pct = vacc_total_dose_2 / population
+    vacc_total_dose_3_pct = vacc_total_dose_3 / population
 
     ret_str = f"🔢 <b>Nøkkeltall - {yesterday}</b>"
 
@@ -71,6 +73,7 @@ def stats(context):
     ret_str += "\n\n💉 Andel av befolkningen vaksinert"
     ret_str += f"\n<b>{vacc_total_dose_1_pct:,.02%}</b> har fått minst én dose (<b>{vacc_total_dose_1:,}</b> personer)"
     ret_str += f"\n<b>{vacc_total_dose_2_pct:,.02%}</b> er fullvaksinert (<b>{vacc_total_dose_2:,}</b> personer)"
+    ret_str += f"\n<b>{vacc_total_dose_3_pct:,.02%}</b> har fått tre vaksinedoser (<b>{vacc_total_dose_3:,}</b> personer)"
 
     ret_str = ret_str.replace(",", " ")
 
@@ -317,14 +320,18 @@ def vaccine(context):
     if diff_total_doses > 0:
         curr_total_dose_1 = curr_data.get("total_dose_1")
         curr_total_dose_2 = curr_data.get("total_dose_2")
+        curr_total_dose_3 = curr_data.get("total_dose_3")
         curr_total_dose_1_pct = curr_total_dose_1 / population
         curr_total_dose_2_pct = curr_total_dose_2 / population
+        curr_total_dose_3_pct = curr_total_dose_3 / population
 
         last_total_dose_1 = last_data.get("total_dose_1")
         last_total_dose_2 = last_data.get("total_dose_2")
+        last_total_dose_3 = last_data.get("total_dose_3")
 
         diff_total_dose_1 = curr_total_dose_1 - last_total_dose_1
         diff_total_dose_2 = curr_total_dose_2 - last_total_dose_2
+        diff_total_dose_3 = curr_total_dose_3 - last_total_dose_3
 
         ret_str = "💉 <b>Antall vaksinerte</b>"
 
@@ -336,8 +343,14 @@ def vaccine(context):
         if diff_total_dose_2 != 0:
             ret_str += f"\n<b>{diff_total_dose_2:,}</b> nye personer fullvaksinert"
 
+        if diff_total_dose_3 != 0:
+            ret_str += (
+                f"\n<b>{diff_total_dose_3:,}</b> nye personer vaksinert med 3. dose"
+            )
+
         ret_str += f"\n\nTotalt <b>{curr_total_dose_1:,}</b> personer (<b>{curr_total_dose_1_pct:,.02%}</b> av befolkningen) har fått minst én vaksinedose"
-        ret_str += f"\nTotalt <b>{curr_total_dose_2:,}</b> personer (<b>{curr_total_dose_2_pct:,.02%}</b> av befolkningen) er fullvaksinert"
+        ret_str += f"\nTotalt <b>{curr_total_dose_2:,}</b> personer (<b>{curr_total_dose_2_pct:,.02%}</b> av befolkningen) er fullvaksinert med to doser"
+        ret_str += f"\nTotalt <b>{curr_total_dose_3:,}</b> personer (<b>{curr_total_dose_3_pct:,.02%}</b> av befolkningen) har fått tre vaksinedoser"
         ret_str += f"\n\nKilde: <a href='{source_url}'>{source_name}</a>"
 
         file_write_json("vaccine_doses", curr_data)
