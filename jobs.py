@@ -71,9 +71,9 @@ def stats(context):
     ret_str += f"\n😷 Tilkoblet respirator: <b>{respiratory_total:,}</b> ({respiratory_pct}% av innlagte)"
 
     ret_str += "\n\n💉 Andel av befolkningen vaksinert"
-    ret_str += f"\n<b>{vacc_total_dose_1_pct:,.02%}</b> har fått minst én dose (<b>{vacc_total_dose_1:,}</b> personer)"
-    ret_str += f"\n<b>{vacc_total_dose_2_pct:,.02%}</b> er fullvaksinert (<b>{vacc_total_dose_2:,}</b> personer)"
-    ret_str += f"\n<b>{vacc_total_dose_3_pct:,.02%}</b> har fått tre vaksinedoser (<b>{vacc_total_dose_3:,}</b> personer)"
+    ret_str += f"\nDose 1: <b>{vacc_total_dose_1_pct:,.02%}</b> (<b>{vacc_total_dose_1:,}</b> personer)"
+    ret_str += f"\nDose 2: <b>{vacc_total_dose_2_pct:,.02%}</b> (<b>{vacc_total_dose_2:,}</b> personer)"
+    ret_str += f"\nDose 3: <b>{vacc_total_dose_3_pct:,.02%}</b> (<b>{vacc_total_dose_3:,}</b> personer)"
 
     ret_str = ret_str.replace(",", " ")
 
@@ -348,9 +348,10 @@ def vaccine(context):
                 f"\n<b>{diff_total_dose_3:,}</b> nye personer vaksinert med 3. dose"
             )
 
-        ret_str += f"\n\nTotalt <b>{curr_total_dose_1:,}</b> personer (<b>{curr_total_dose_1_pct:,.02%}</b> av befolkningen) har fått minst én vaksinedose"
-        ret_str += f"\nTotalt <b>{curr_total_dose_2:,}</b> personer (<b>{curr_total_dose_2_pct:,.02%}</b> av befolkningen) er fullvaksinert med to doser"
-        ret_str += f"\nTotalt <b>{curr_total_dose_3:,}</b> personer (<b>{curr_total_dose_3_pct:,.02%}</b> av befolkningen) har fått tre vaksinedoser"
+        ret_str += "\n\n<b>Total andel av befolkningen</b>"
+        ret_str += f"\nDose 1: <b>{curr_total_dose_1_pct:,.02%}</b> ({curr_total_dose_1:,} personer)"
+        ret_str += f"\nDose 2: <b>{curr_total_dose_2_pct:,.02%}</b> ({curr_total_dose_2:,} personer)"
+        ret_str += f"\nDose 3: <b>{curr_total_dose_3_pct:,.02%}</b> ({curr_total_dose_3:,} personer)"
         ret_str += f"\n\nKilde: <a href='{source_url}'>{source_name}</a>"
 
         file_write_json("vaccine_doses", curr_data)

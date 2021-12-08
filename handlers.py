@@ -87,9 +87,9 @@ def stats(update, context):
     ret_str += f"\n😷 Tilkoblet respirator: <b>{respiratory_total:,}</b> ({respiratory_pct}% av innlagte)"
 
     ret_str += "\n\n💉 Andel av befolkningen vaksinert"
-    ret_str += f"\n<b>{vacc_total_dose_1_pct:,.02%}</b> har fått minst én dose (<b>{vacc_total_dose_1:,}</b> personer)"
-    ret_str += f"\n<b>{vacc_total_dose_2_pct:,.02%}</b> er fullvaksinert med to doser (<b>{vacc_total_dose_2:,}</b> personer)"
-    ret_str += f"\n<b>{vacc_total_dose_3_pct:,.02%}</b> har fått tre vaksinedoser (<b>{vacc_total_dose_3:,}</b> personer)"
+    ret_str += f"\nDose 1: <b>{vacc_total_dose_1_pct:,.02%}</b> ({vacc_total_dose_1:,} personer)"
+    ret_str += f"\nDose 2: <b>{vacc_total_dose_2_pct:,.02%}</b> ({vacc_total_dose_2:,} personer)"
+    ret_str += f"\nDose 3: <b>{vacc_total_dose_3_pct:,.02%}</b> ({vacc_total_dose_3:,} personer)"
 
     ret_str = ret_str.replace(",", " ")
 
