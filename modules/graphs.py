@@ -478,8 +478,8 @@ def smittestopp():
     ).dropna()
 
     rename = {
-        "new_reported": "Antall meldt smittet i Smittestopp",
-        "total_downloads": "Antall nedlastinger av Smittestopp",
+        "new_reported": "Antall meldt smittet",
+        "total_downloads": "Antall nedlastinger",
     }
 
     df["category"] = df["category"].replace(rename)
@@ -490,33 +490,27 @@ def smittestopp():
     ).encode(alt.X("yearmonthdate(date):O", axis=alt.Axis(title=None, labelAngle=-40)))
 
     downloads = (
-        base.transform_filter(
-            alt.datum.category == "Antall nedlastinger av Smittestopp"
-        )
+        base.transform_filter(alt.datum.category == "Antall nedlastinger")
         .mark_area(line={}, color="#5BC1FF", opacity=0.2)
         .encode(
             y=alt.Y(
                 "value:Q",
-                axis=alt.Axis(title="Antall nedlastinger av Smittestopp", grid=True),
+                axis=alt.Axis(title="Antall nedlastinger", grid=True),
             )
         )
     )
 
     reported = (
-        base.transform_filter(
-            alt.datum.category == "Antall meldt smittet i Smittestopp"
-        )
+        base.transform_filter(alt.datum.category == "Antall meldt smittet")
         .mark_bar(color="#FFA57E")
         .encode(
-            y=alt.Y(
-                "value:Q", axis=alt.Axis(title="Antall meldt smittet i Smittestopp")
-            ),
+            y=alt.Y("value:Q", axis=alt.Axis(title="Antall meldt smittet")),
             color=alt.Color(
                 "category:N",
                 scale=alt.Scale(
                     domain=[
-                        "Antall nedlastinger av Smittestopp",
-                        "Antall meldt smittet i Smittestopp",
+                        "Antall nedlastinger",
+                        "Antall meldt smittet",
                     ],
                     range=["#5BC1FF", "#FFA57E"],
                 ),

@@ -390,14 +390,14 @@ def smittestopp(context):
         new_reported = int(curr_data.get("new_reported"))
 
         if new_downloads == 1:
-            new_downloads_text = "ny nedlasting av appen Smittestopp"
+            new_downloads_text = "ny nedlasting"
         else:
-            new_downloads_text = "nye nedlastinger av appen Smittestopp"
+            new_downloads_text = "nye nedlastinger"
 
         if new_reported == 1:
-            new_reported_text = "ny person meldt smittet gjennom appen Smittestopp"
+            new_reported_text = "ny person meldt smittet i appen"
         else:
-            new_reported_text = "nye personer meldt smittet gjennom appen Smittestopp"
+            new_reported_text = "nye personer meldt smittet i appen"
 
         ret_str = "📱 <b>Smittestopp</b>"
 
@@ -408,7 +408,9 @@ def smittestopp(context):
             ret_str += f"\n<b>{new_reported:,}</b> {new_reported_text}"
 
         ret_str += f"\n\nTotalt antall nedlastinger: <b>{curr_total_downloads:,}</b>"
-        ret_str += f"\nTotalt <b>{curr_total_reported:,}</b> personer er meldt smittet gjennom appen"
+        ret_str += (
+            f"\nTotalt meldt smittet i appen: <b>{curr_total_reported:,}</b> personer"
+        )
         ret_str += f"\n\nKilde: <a href='{source_url}'>{source_name}</a>"
 
         file_write_json("smittestopp", curr_data)
