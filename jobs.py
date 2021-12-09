@@ -429,6 +429,59 @@ def smittestopp(context):
         return None
 
 
+def omicron(context):
+    source_name = jobs["omicron"]["source"]["name"]
+    source_url = jobs["omicron"]["source"]["url"]
+
+    curr_data = c19api.timeseries("omicron")[-1]
+    curr_total_confirmed = int(curr_data.get("total_confirmed"))
+    curr_total_probable = int(curr_data.get("total_probable"))
+
+    last_data = file_open_json("omicron")
+    last_total_confirmed = int(last_data.get("total_confirmed"))
+    last_total_probable = int(last_data.get("total_probable"))
+
+    diff_total_confirmed = curr_total_confirmed - last_total_confirmed
+    diff_total_probable = curr_total_probable - last_total_probable
+
+    if diff_total_confirmed > 0 or diff_total_probable > 0:
+        if diff_total_confirmed == 1:
+            new_confirmed_text = "nytt bekreftet smittetilfelle"
+        else:
+            new_confirmed_text = "nye bekreftede smittetilfeller"
+
+        if diff_total_probable == 1:
+            new_probable_text = "nytt sannsynlig smittetilfelle"
+        else:
+            new_probable_text = "nye sannsynlige smittetilfeller"
+
+        ret_str = "🧬 <b>Tilfeller av Omikron-viruset</b>"
+
+        if diff_total_probable > 0:
+            ret_str += f"\n<b>{diff_total_probable:,}</b> {new_probable_text}"
+
+        if diff_total_confirmed > 0:
+            ret_str += f"\n<b>{diff_total_confirmed:,}</b> {new_confirmed_text}"
+
+        ret_str += f"\n\nTotalt sannsynlige tilfeller: <b>{curr_total_probable:,}</b>"
+        ret_str += f"\nTotalt bekreftede tilfeller: <b>{curr_total_confirmed:,}</b>"
+        ret_str += f"\n\nKilde: <a href='{source_url}'>{source_name}</a>"
+
+        file_write_json("omicron", curr_data)
+
+        ret_str = ret_str.replace(",", " ")
+        print(ret_str, "\n")
+
+        context.bot.send_message(
+            chat_id=bot["autopost"]["chatid"],
+            text=ret_str,
+            parse_mode=ParseMode.HTML,
+        )
+
+    else:
+        return None
+
+
 def rss_feed(context):
     res = rss.fetch_feed()
 
