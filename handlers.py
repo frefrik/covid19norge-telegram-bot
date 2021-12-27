@@ -36,6 +36,7 @@ def stats(update, context):
     confirmed = c19api.metadata("confirmed")
     dead = c19api.metadata("dead")
     admissions = c19api.metadata("admissions")
+    icu = c19api.metadata("icu")
     respiratory = c19api.metadata("respiratory")
     vaccine_doses = c19api.timeseries("vaccine_doses")
 
@@ -44,6 +45,7 @@ def stats(update, context):
     confirmed_total = confirmed.get("total")
     dead_total = dead.get("total")
     admissions_total = admissions.get("total")
+    icu_total = icu.get("total")
     respiratory_total = respiratory.get("total")
 
     # newToday
@@ -58,6 +60,7 @@ def stats(update, context):
     # percentages
     dead_pct = round(dead_total / confirmed_total * 100, 1)
     respiratory_pct = round(respiratory_total / admissions_total * 100, 1)
+    icu_pct = round(icu_total / admissions_total * 100, 1)
 
     # vaccine data
     vaccine_data = list(
@@ -84,6 +87,7 @@ def stats(update, context):
     ret_str += f"\nTotalt: <b>{tested_total:,}</b>"
 
     ret_str += f"\n\n🏥 Innlagt på sykehus: <b>{admissions_total:,}</b>"
+    ret_str += f"\n🤒 Innlagt på intensivavdeling: <b>{icu_total:,}</b> ({icu_pct}% av innlagte)"
     ret_str += f"\n😷 Tilkoblet respirator: <b>{respiratory_total:,}</b> ({respiratory_pct}% av innlagte)"
 
     ret_str += "\n\n💉 Andel av befolkningen vaksinert"

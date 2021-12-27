@@ -264,14 +264,17 @@ def hospitalized():
     df = df.reset_index(drop=True)
 
     df["admissions"] = df["admissions"].fillna(method="ffill").astype(int)
+    df["icu"] = df["icu"].fillna(method="ffill").astype(int)
     df["respiratory"] = df["respiratory"].fillna(method="ffill").astype(int)
 
     df_melt = pd.melt(
         df,
         id_vars=["date"],
-        value_vars=["admissions", "respiratory"],
+        value_vars=["admissions", "icu", "respiratory"],
         value_name="value",
-    ).replace({"admissions": "Innlagt", "respiratory": "På respirator"})
+    ).replace(
+        {"admissions": "Innlagt", "icu": "Intensiv", "respiratory": "På respirator"}
+    )
 
     chart = (
         alt.Chart(df_melt, title="Innlagt på sykehus (Kilde: Helsedirektoratet)")
@@ -286,7 +289,8 @@ def hospitalized():
             color=alt.Color(
                 "variable:N",
                 scale=alt.Scale(
-                    domain=["Innlagt", "På respirator"], range=["#5A9DFF", "#FF8B1B"]
+                    domain=["Innlagt", "Intensiv", "På respirator"],
+                    range=["#5A9DFF", "#FF8B1B", "#FF642B"],
                 ),
                 legend=alt.Legend(title=None),
             ),
