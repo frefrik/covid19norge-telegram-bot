@@ -13,44 +13,45 @@ def tested():
 
     data = c19api.timeseries("tested_lab")
     df = pd.DataFrame(data)
+    df["sma7"] = df["pr100_pos"].rolling(window=7).mean()
 
     mapping = {
         "new_neg": "Nye (Negative)",
         "new_pos": "Nye (Positive)",
         "new_total": "Nye",
-        "pr100_pos": "Andel Positive",
+        "pr100_pos": "Andel Positive (%)",
         "total": "Akkumulert",
+        "sma7": "Snitt 7 d.",
     }
 
     df = df.rename(columns=mapping)
     df["date"] = pd.to_datetime(df["date"])
-    df["Andel Negative"] = 100 - df["Andel Positive"]
-    df = df.melt(
-        id_vars=["date", "Andel Positive"], var_name="category", value_name="value"
-    )
+    df = df[["date", "Andel Positive (%)", "Snitt 7 d."]]
+    df = df.melt(id_vars=["date"], var_name="category", value_name="value")
 
     base = alt.Chart(
         df,
-        title="Antall personer testet for covid-19 per dag og andel positive blant disse (Kilde: FHI)",
+        title="Andel positive tester (Kilde: FHI)",
     ).encode(alt.X("yearmonthdate(date):O", axis=alt.Axis(title=None, labelAngle=-40)))
 
-    andel = base.mark_line(color="red", opacity=0.8).encode(
-        y=alt.Y("Andel Positive:Q", title="% Positive", axis=alt.Axis(grid=True))
+    bar = (
+        base.transform_filter(alt.datum.category == "Andel Positive (%)")
+        .mark_bar(color="#FFD1D1")
+        .encode(
+            y=alt.Y("value:Q", axis=alt.Axis(title="Andel Positive (%)", grid=True))
+        )
     )
 
-    bar = (
-        base.transform_filter(
-            (alt.datum.category == "Nye (Negative)")
-            | (alt.datum.category == "Nye (Positive)")
-        )
-        .mark_bar()
+    line = (
+        base.transform_filter(alt.datum.category == "Snitt 7 d.")
+        .mark_line(color="red", opacity=0.8)
         .encode(
-            y=alt.Y("value:Q", title="Antall personer testet for covid-19 per dag"),
+            y=alt.Y("value:Q", title="Snitt 7 d."),
             color=alt.Color(
                 "category:N",
                 scale=alt.Scale(
-                    domain=["Nye (Positive)", "Nye (Negative)", "% Positive"],
-                    range=["#FF9622", "#6DA9FF", "red"],
+                    domain=["Andel Positive (%)", "Snitt 7 d."],
+                    range=["#FFD1D1", "red"],
                 ),
                 legend=alt.Legend(title=None),
             ),
@@ -58,7 +59,7 @@ def tested():
     )
 
     chart = (
-        alt.layer(bar, andel)
+        alt.layer(bar + line)
         .resolve_scale(y="independent")
         .properties(width=1200, height=600)
         .configure_legend(

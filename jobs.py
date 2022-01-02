@@ -131,9 +131,8 @@ def tested_lab(context):
     last_total = last_data.get("total")
 
     if curr_total - last_total > 0:
-        ret_str = "🔬 <b>Antall testet (Laboratoriedata)</b>"
-        ret_str += "\nAntall personer testet og andelen positive blant disse i Norge siden epidemiens start."
-        ret_str += "\nEn ny test på en person defineres som en test utført minst 7 dager etter forrige test av samme person."
+        ret_str = "🔺 <b>Andel positive tester</b>"
+        ret_str += "\nProsentandelen positive tester i Norge siden epidemiens start."
         ret_str += f"\n\nKilde: <a href='{source_url}'>{source_name}</a>"
 
         file_write_json("tested_lab", curr_data)
