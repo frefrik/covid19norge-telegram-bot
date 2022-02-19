@@ -114,7 +114,10 @@ def tested(context):
         print(ret_str, "\n")
 
         context.bot.send_message(
-            chat_id=bot["autopost"]["chatid"], text=ret_str, parse_mode=ParseMode.HTML
+            chat_id=bot["autopost"]["chatid"],
+            text=ret_str,
+            parse_mode=ParseMode.HTML,
+            disable_web_page_preview=True,
         )
     else:
         return None
@@ -183,7 +186,10 @@ def confirmed(context):
         print(ret_str, "\n")
 
         context.bot.send_message(
-            chat_id=bot["autopost"]["chatid"], text=ret_str, parse_mode=ParseMode.HTML
+            chat_id=bot["autopost"]["chatid"],
+            text=ret_str,
+            parse_mode=ParseMode.HTML,
+            disable_web_page_preview=True,
         )
     else:
         return None
