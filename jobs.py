@@ -70,9 +70,12 @@ def stats(context):
     ret_str += f"\n\n🔬 Testede siste døgn: <b>{tested_newYesterday:,}</b>"
     ret_str += f"\nTotalt: <b>{tested_total:,}</b>"
 
-    ret_str += f"\n\n🏥 Innlagt på sykehus: <b>{admissions_total:,}</b>"
-    ret_str += f"\n🤒 Innlagt på intensivavdeling: <b>{icu_total:,}</b> ({icu_pct}% av innlagte)"
-    ret_str += f"\n😷 Tilkoblet respirator: <b>{respiratory_total:,}</b> ({respiratory_pct}% av innlagte)"
+    # https://www.helsedirektoratet.no/statistikk/antall-innlagte-pasienter-pa-sykehus-med-pavist-covid-19
+    # Fra 23. mars 2022 ble rapporteringen avsluttet og visningen blir derfor ikke lenger oppdatert etter denne datoen.
+    # 
+    # ret_str += f"\n\n🏥 Innlagt på sykehus: <b>{admissions_total:,}</b>"
+    # ret_str += f"\n🤒 Innlagt på intensivavdeling: <b>{icu_total:,}</b> ({icu_pct}% av innlagte)"
+    # ret_str += f"\n😷 Tilkoblet respirator: <b>{respiratory_total:,}</b> ({respiratory_pct}% av innlagte)"
 
     ret_str += "\n\n💉 Andel av befolkningen vaksinert"
     ret_str += f"\nDose 1: <b>{vacc_total_dose_1_pct:,.02%}</b> (<b>{vacc_total_dose_1:,}</b> personer)"
